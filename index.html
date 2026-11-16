@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>装机比价 · 2027 年 618</title>
+<link rel="apple-touch-icon" href="icon-180.jpg">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="装机比价">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#C9D6E8">
+<style>
+:root{
+  /* 参考图配色：雾蓝灰底 + 白色大圆角卡片 + 亮蓝强调 + 藏青按钮 */
+  --bg:#C9D6E8; --bg2:#DDE7F4; --paper:#FFFFFF; --paper-hi:#F7FAFF; --paper-lo:#F2F6FC;
+  --line:#E2EAF5; --line-soft:#EDF2F9;
+  --ink:#1E2740; --ink-2:#5A6883; --ink-3:#94A3BC;
+  --blue:#2F6BFF; --blue-deep:#1B3A8C; --blue-soft:#E8F0FF;
+  --sage:#3E9C72; --sage-deep:#1F7A55; --sage-bg:#E3F5EC;
+  --olive:#5C7186; --sand:#8C9BB5; --sand-bg:#EEF3FA;
+  --clay:#D98A55; --clay-bg:#FDEEE2;
+  --na-bg:#EEF2F8; --na-ink:#9AA8BE;
+  --r:24px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:linear-gradient(160deg,#C3D2E7 0%,#D5E0F0 46%,#C9D6E8 100%);
+  background-attachment:fixed;min-height:100vh;color:var(--ink);
+  font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+button{font:inherit}
+
+/* ---------- topbar ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(232,239,250,.86);
+  backdrop-filter:saturate(1.3) blur(18px);-webkit-backdrop-filter:saturate(1.3) blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.6)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.mark{width:38px;height:38px;border-radius:13px;flex:none;display:grid;place-items:center;
+  background:linear-gradient(135deg,#4E86FF,#1B3A8C);color:#fff;font-size:12px;font-weight:600;
+  box-shadow:0 4px 12px rgba(47,107,255,.28)}
+.brand h1{margin:0;font-size:17px;font-weight:600;letter-spacing:.01em}
+.brand .sub{margin:1px 0 0;font-size:12px;color:var(--ink-3)}
+.actions{display:flex;align-items:center;gap:8px;flex:none}
+.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink-2);
+  padding:8px 15px;border-radius:999px;font-size:13px;font-weight:500;cursor:pointer;transition:.16s ease;white-space:nowrap;
+  box-shadow:0 2px 8px rgba(30,50,90,.05)}
+.btn:hover{background:#fff;color:var(--ink);border-color:#B9CBEA}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 4px 14px rgba(47,107,255,.25)}
+.btn.primary:hover{background:#1E5BEB;border-color:#1E5BEB;color:#fff}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--ink-3);box-shadow:none}
+.btn.ghost:hover{background:rgba(255,255,255,.7);color:var(--ink-2)}
+.btn.sm{padding:5px 11px;font-size:12px;border-radius:999px}
+.btn.busy{opacity:.62;pointer-events:none}
+.btn.offline{background:#FDEEE2;border-color:#F3D3B8;color:#B96A33}
+.btn.saved{background:#E3F5EC;border-color:#BFE6D1;color:#1F7A55}
+
+/* ---------- meta ---------- */
+.metarow{display:flex;align-items:center;gap:10px;margin:18px 0 16px;font-size:12px;color:var(--ink-3);flex-wrap:wrap}
+.metarow .dot{width:3px;height:3px;border-radius:50%;background:#B4C2DA}
+.metarow b{color:var(--ink-2);font-weight:500}
+.due{background:var(--clay-bg);color:#B96A33;padding:2px 10px;border-radius:999px;font-size:11px}
+
+/* ---------- summary ---------- */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 22px}
+.card{background:var(--paper);border:1px solid rgba(255,255,255,.9);border-radius:var(--r);padding:17px 19px 18px;
+  box-shadow:0 8px 26px rgba(40,66,120,.10)}
+.card .k{font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+.card .v{font-size:23px;font-weight:700;margin-top:5px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.card .d{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.card.hl{background:linear-gradient(150deg,#3C77FF,#1B3A8C);border-color:transparent}
+.card.hl .k{color:rgba(255,255,255,.82)}
+.card.hl .v{color:#fff}
+.card.hl .d{color:rgba(255,255,255,.72)}
+.card.hl .exp{color:rgba(255,255,255,.8)}
+.card .k{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pickable{cursor:pointer;transition:transform .18s,box-shadow .18s;user-select:none}
+.pickable:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(40,66,120,.16)}
+.pickable:focus-visible{outline:2px solid #7FA6FF;outline-offset:2px}
+.exp{font-size:10.5px;color:var(--ink-3);display:inline-flex;align-items:center;gap:3px;
+  padding:2px 7px;border-radius:999px;transition:.18s}
+.pickable:hover .exp{color:var(--ink-2);background:rgba(255,255,255,.18)}
+.pickable[aria-expanded="true"] .exp{color:var(--ink-2);background:rgba(255,255,255,.22)}
+.exp svg{transition:transform .22s ease}
+.pickable[aria-expanded="true"] .exp svg{transform:rotate(180deg)}
+
+.bd-panel{display:none;background:linear-gradient(180deg,#F7FAFF,#F2F6FC);border:1px solid var(--line);
+  border-radius:18px;padding:15px 20px 12px;margin:0 0 18px}
+.bd-panel.on{display:block;animation:bdIn .22s ease both}
+@keyframes bdIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.bd-hd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-bottom:10px}
+.bd-title{font-size:13px;font-weight:600;color:var(--ink)}
+.bd-title b{font-weight:600;color:var(--sage-deep)}
+.bd-sub{font-size:11.5px;color:var(--ink-3)}
+.bd-close{margin-left:auto;border:0;background:transparent;color:var(--ink-3);font-size:11.5px;
+  cursor:pointer;padding:3px 8px;border-radius:7px;transition:.15s}
+.bd-close:hover{background:rgba(0,0,0,.045);color:var(--ink-2)}
+.bd-list{border-top:1px solid var(--line-soft)}
+.bd-row{display:grid;grid-template-columns:148px 1fr 52px 44px 104px;align-items:center;gap:10px;
+  padding:7px 0;border-bottom:1px solid var(--line-soft)}
+.bd-row.got{opacity:.55}
+.bd-cat{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2);white-space:nowrap}
+.bd-cat i{width:6px;height:6px;border-radius:50%;flex:none}
+.bd-cat em{font-style:normal;font-size:10px;color:var(--ink-3);margin-left:2px}
+.bd-cat em.star-tag{color:#8A6D2F;background:#FEF3D6;border-radius:999px;padding:1px 6px}
+.bd-name{font-size:12.5px;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-name .n{display:inline-block;margin-left:6px;padding:0 6px;border-radius:999px;background:#E8F0FF;
+  color:#1B3A8C;font-size:10px;vertical-align:1px}
+.bd-name .got-tag{margin-left:6px;font-size:10px;color:var(--sage-deep);background:var(--sage-bg);
+  border-radius:999px;padding:0 6px}
+.bd-src{font-size:10.5px;text-align:center;padding:2px 0;border-radius:6px;letter-spacing:.02em}
+.bd-src.tb{background:#FDEEE2;color:#8A6440}
+.bd-src.jd{background:#FBE7E0;color:#8A5A50}
+.bd-qty{font-size:11px;color:var(--ink-3);text-align:center}
+.bd-price{font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+.bd-skip{font-size:11.5px;color:var(--ink-3);line-height:1.6;padding:9px 0 0;
+  margin-top:2px;border-top:1px dashed var(--line)}
+.bd-skip:empty{display:none}
+.bd-skip b{font-weight:600;color:var(--ink-2)}
+.bd-foot{display:flex;justify-content:space-between;align-items:baseline;padding-top:10px}
+.bd-foot span:first-child{font-size:11.5px;color:var(--ink-3)}
+.bd-foot span:last-child{font-size:15px;font-weight:600;color:var(--sage-deep);font-variant-numeric:tabular-nums}
+
+/* ---------- group ---------- */
+.group{background:var(--paper);border:1px solid rgba(255,255,255,.9);border-radius:20px;margin-bottom:14px;overflow:hidden;
+  box-shadow:0 6px 22px rgba(40,66,120,.08)}
+.ghd{display:flex;align-items:center;gap:9px;padding:14px 20px;border-bottom:1px solid var(--line-soft);background:linear-gradient(180deg,#F5F8FE,#F2F6FC)}
+.cdot{width:7px;height:7px;border-radius:50%;flex:none}
+.ghd h2{margin:0;font-size:14px;font-weight:600;letter-spacing:.01em}
+.ghd .cnt{font-size:11.5px;color:var(--ink-3)}
+.ghd .sp{flex:1}
+.ghd .lo{font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+/* 类目头上的「计入整机」勾选：取消后整组降灰，一眼看出这个类目没进结算 */
+.inc{display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none;
+  padding:3px 10px 3px 6px;border-radius:999px;background:var(--blue-soft);
+  font-size:11px;color:var(--blue-deep);letter-spacing:.02em;transition:background .15s,color .15s;white-space:nowrap}
+.inc:hover{background:#DAE7FF}
+.inc input{appearance:none;-webkit-appearance:none;margin:0;width:13px;height:13px;flex:none;
+  border:1.4px solid #B7C8E6;border-radius:4px;background:#fff;cursor:pointer;
+  display:grid;place-items:center;transition:.15s}
+.inc input:hover{border-color:var(--blue)}
+.inc input:checked{background:var(--blue);border-color:var(--blue)}
+.inc input:checked::after{content:"";width:3px;height:6px;border:1.6px solid #fff;border-top:0;border-left:0;
+  transform:rotate(42deg) translate(-.5px,-.5px)}
+.inc.off{background:var(--clay-bg);color:#B96A33}
+.inc.off input{border-color:#E8C4A5}
+.group.off .row.body{opacity:.6}
+.group.off .row.body:hover{opacity:1}
+.group.off .lo{color:#B96A33}
+
+.tbl{width:100%}
+.row{display:grid;align-items:center;gap:10px;padding:13px 20px;border-top:1px solid var(--line-soft);
+  grid-template-columns:30px 40px minmax(240px,1fr) 44px 98px 98px 92px 98px 98px 80px 62px 66px;transition:background .16s}
+.row:first-child{border-top:0}
+.row.head{padding:9px 20px;color:var(--ink-3);font-size:11px;letter-spacing:.06em;background:transparent}
+.row.body:hover{background:var(--paper-hi)}
+.row.body.is-low{background:#EAF7F0;box-shadow:inset 3px 0 0 #57B48C}
+.row.body.is-low:hover{background:#E1F3EA}
+.row.body.bought{background:var(--paper-lo)}
+.row.body.bought .nm,.row.body.bought .nt{opacity:.5}
+
+.c-star{display:flex;justify-content:center}
+.star{border:0;background:transparent;cursor:pointer;padding:0;line-height:1;
+  color:#CFD9E9;font-size:17px;transition:color .15s,transform .15s}
+.star:hover{color:#F0B429;transform:scale(1.14)}
+.star.on{color:#F0A500}
+.star:focus-visible{outline:2px solid #7FA6FF;outline-offset:2px;border-radius:5px}
+.c-check{display:flex;justify-content:center}
+.cb{position:relative;display:inline-flex;cursor:pointer}
+.cb input{appearance:none;-webkit-appearance:none;margin:0;width:21px;height:21px;border:1.5px solid #C6D2E6;
+  border-radius:7px;background:#fff;cursor:pointer;display:grid;place-items:center;transition:.15s}
+.cb input:hover{border-color:var(--blue)}
+.cb input:checked{background:var(--blue);border-color:var(--blue)}
+.cb input:checked::after{content:"";width:5px;height:10px;border:2px solid #fff;border-top:0;border-left:0;
+  transform:rotate(42deg) translate(-1px,-1px)}
+
+.nick{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:#E8F0FF;
+  color:#1B3A8C;font-size:10.5px;font-weight:500;letter-spacing:.02em;vertical-align:1.5px;white-space:nowrap}
+.nick[data-nick]{cursor:pointer;transition:background .15s,color .15s}
+.nick[data-nick]:hover{background:#C9DCFF;color:#5C4B32}
+.nick-add{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;border:1px dashed #C6D2E6;
+  background:transparent;color:#9AA8BE;font-size:10.5px;font-weight:500;letter-spacing:.02em;
+  vertical-align:1.5px;white-space:nowrap;cursor:pointer;opacity:0;transition:opacity .15s,background .15s,color .15s}
+.row.body:hover .nick-add,.nick-add:focus-visible{opacity:1}
+.nick-add:hover{border-color:#BAC6B5;color:#1B3A8C;background:#EEF3FA}
+@media (hover:none){.nick-add{opacity:1}}
+.must{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:#DFF2E8;
+  color:#1F7A55;font-size:10.5px;font-weight:500;letter-spacing:.02em;vertical-align:1.5px;white-space:nowrap}
+.num.jd{color:var(--ink-2)}
+.num.fillable{cursor:pointer;color:#AEBBD0}
+/* 拆件套餐：京东把 CPU 和主板分开卖，这一格显示两件加总 */
+.jd-split{display:inline-block;margin-left:5px;padding:0 5px;border-radius:5px;background:#E1F3EA;
+  color:#1F7A55;font-size:9.5px;font-weight:600;letter-spacing:.02em;vertical-align:1px;white-space:nowrap}
+/* 多店报价：同一件商品在淘宝 / 天猫别家店的价，只作参考，不参与结算 */
+.qline{font-size:10.5px;color:var(--ink-3);line-height:1.45;margin-top:2px;white-space:normal;
+  word-break:break-word}
+.qline b{font-weight:600;white-space:nowrap}
+.qline.best{color:#1F7A55}
+.splitbox{grid-column:1/-1;border:1px solid #E2EAF5;background:#F7FAFF;border-radius:10px;padding:11px 13px;margin-top:2px}
+.splitbox .sb-hd{font-size:11.5px;color:var(--ink-3);margin-bottom:9px;line-height:1.55}
+.splitbox .sb-row{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.splitbox .sb-row .sb-n{flex:1;min-width:0;font-size:12px;color:var(--ink-2);line-height:1.35}
+.splitbox .sb-row .sb-src{font-size:10.5px;color:var(--ink-3);display:block;margin-top:1px}
+.splitbox .sb-row input{width:104px;flex:none;font:inherit;font-size:13px;color:var(--ink);background:#FFFFFF;
+  border:1px solid #D5E0F0;border-radius:7px;padding:5px 8px;text-align:right}
+.splitbox .sb-row input:focus{outline:none;border-color:#7FA6FF;background:#fff;box-shadow:0 0 0 3px rgba(143,163,145,.14)}
+.splitbox .sb-ft{display:flex;align-items:center;gap:10px;border-top:1px dashed #D5E0F0;padding-top:9px;margin-top:3px;
+  font-size:12px;color:var(--ink-2)}
+.splitbox .sb-ft b{font-size:14px;color:var(--ink);margin-left:2px}
+.splitbox .sb-ft .sp{flex:1}
+.splitbox .sb-tip{font-size:10.5px;color:var(--ink-3);margin-top:7px;line-height:1.5}
+.splitbox .btn.sm{padding:4px 9px;font-size:11px;border-radius:7px}
+.num.fillable:hover{color:var(--sage-deep);background:rgba(143,163,145,.10);border-radius:6px}
+.cmp{font-size:11.5px;letter-spacing:0}
+.cmp.jd{color:var(--sage-deep)}
+.cmp.tb{color:#B96A33}
+.dim2{color:#AEBBD0;font-size:11.5px}
+.c-name{min-width:0}
+.c-name .bd{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:.01em}
+.c-name .nm{font-size:13px;color:var(--ink);margin-top:1px}
+.c-name .nt{font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.c-qty{font-size:12.5px;color:var(--ink-3);text-align:center;font-variant-numeric:tabular-nums}
+.num{text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px;letter-spacing:-.01em}
+.num.cur{font-size:14.5px;font-weight:600}
+.num.low{color:var(--sage-deep)}
+.num.avg{color:var(--ink-2)}
+.num.dim{color:var(--ink-3)}
+.bought-mark{font-size:13px;color:var(--ink-3);text-decoration:line-through;text-decoration-color:#C6D2E6}
+
+.chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;white-space:nowrap;letter-spacing:.01em}
+.chip.low{background:var(--sage-bg);color:var(--sage-deep)}
+.chip.ok{background:#E4F3EA;color:#5B6E5C}
+.chip.high{background:var(--clay-bg);color:#B96A33}
+.chip.na{background:var(--na-bg);color:var(--na-ink)}
+
+.c-spark{display:flex;justify-content:center}
+.sp{border:0;background:transparent;padding:3px 2px;border-radius:7px;cursor:pointer;line-height:0;transition:.15s}
+.sp:hover{background:rgba(0,0,0,.035)}
+.c-act{display:flex;justify-content:center;gap:2px}
+.ico{border:0;background:transparent;color:#9AA8BE;cursor:pointer;padding:4px;border-radius:7px;line-height:0;transition:.15s}
+.ico:hover{color:var(--ink-2);background:rgba(0,0,0,.035)}
+.ico.del:hover{color:#C67A49;background:rgba(169,131,116,.10)}
+
+.foot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:26px 0 40px;font-size:11.5px;color:var(--ink-3)}
+.foot .legend{display:flex;gap:14px;flex-wrap:wrap}
+.foot .legend i{font-style:normal}
+
+/* ---------- modal ---------- */
+.ovl{position:fixed;inset:0;z-index:60;background:rgba(62,58,53,.30);backdrop-filter:blur(3px);
+  display:none;align-items:center;justify-content:center;padding:24px}
+.ovl.on{display:flex}
+.modal{background:var(--paper);border-radius:20px;width:100%;max-width:660px;max-height:88vh;overflow:auto;
+  padding:26px 28px 24px;box-shadow:0 26px 70px rgba(62,58,53,.20)}
+.modal.wide{max-width:820px}
+.mhd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+.mhd h3{margin:0;font-size:16px;font-weight:600}
+.mhd p{margin:3px 0 0;font-size:12px;color:var(--ink-3)}
+.x{border:0;background:transparent;color:var(--ink-3);font-size:20px;line-height:1;cursor:pointer;padding:4px 6px;border-radius:8px}
+.x:hover{background:rgba(0,0,0,.04);color:var(--ink)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:11.5px;color:var(--ink-3);letter-spacing:.03em}
+.fld input,.fld select,.fld textarea{font:inherit;font-size:13.5px;color:var(--ink);background:#FFFFFF;
+  border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;transition:.15s;width:100%}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#7FA6FF;background:#fff;box-shadow:0 0 0 3px rgba(143,163,145,.14)}
+.fld .hint{font-size:11px;color:var(--ink-3)}
+.mfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.mfoot .left{margin-right:auto}
+
+.help h4{font-size:13.5px;margin:18px 0 6px;font-weight:600}
+.help p,.help li{font-size:13px;color:var(--ink-2);line-height:1.75}
+.help ol,.help ul{padding-left:20px;margin:6px 0}
+.help code{background:#EEF3FA;border:1px solid #DBE5F2;border-radius:5px;padding:1px 5px;font-size:12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#6A6157}
+.help pre{background:#F2F6FC;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow:auto;font-size:12px;line-height:1.6}
+.help pre code{background:none;border:0;padding:0}
+.help .note{background:#F2F6FC;border-left:2px solid var(--sand);padding:10px 14px;border-radius:0 10px 10px 0;font-size:12.5px;color:var(--ink-2)}
+.cloudbox{border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin:10px 0 4px;
+  background:linear-gradient(160deg,#F7FAFF,#F2F6FC);display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.cloudbox .fld:nth-child(3),.cloudbox .fld:nth-child(4){grid-column:1/-1}
+.cloudbox .cf-status{grid-column:1/-1;font-size:11.5px;color:var(--ink-3);padding:2px 0}
+.cloudbox .cf-status.ok{color:var(--sage-deep)}
+.cloudbox .cf-status.bad{color:#B96A33}
+.cloudbox .cf-btns{grid-column:1/-1;display:flex;gap:7px;flex-wrap:wrap}
+.cloudbox>.hint{grid-column:1/-1;margin:4px 0 0;line-height:1.6}
+@media (max-width:760px){.cloudbox{grid-template-columns:1fr}}
+
+/* ---------- 筛选 / 回收站 ---------- */
+.filterbar{position:sticky;top:72px;z-index:20;margin:0 0 16px;padding:10px 14px;
+  background:rgba(248,245,240,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(62,58,53,.045)}
+.fb-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fb-label{font-size:11.5px;color:var(--ink-3);letter-spacing:.04em;flex:none}
+.fb-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
+.fb-chip{border:1px solid var(--line);background:var(--paper);color:var(--ink-2);
+  padding:5px 11px;border-radius:999px;font-size:12px;cursor:pointer;white-space:nowrap;transition:.15s}
+.fb-chip:hover{border-color:#CFD9C8;color:var(--ink)}
+.fb-chip.on{background:var(--sage-bg);border-color:#B9CCEC;color:var(--sage-deep);font-weight:500}
+.fb-chip b{font-weight:500;opacity:.6;margin-left:4px;font-size:10.5px}
+.fb-tools{display:flex;align-items:center;gap:6px;flex:none}
+.fb-search{border:1px solid var(--line);background:var(--paper);border-radius:9px;
+  padding:6px 10px;font-size:12px;width:152px;color:var(--ink);outline:none;font-family:inherit}
+.fb-search:focus{border-color:#B9CCEC;background:#fff}
+.fb-search::-webkit-search-cancel-button{cursor:pointer}
+.fb-count{font-size:11.5px;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.empty{padding:30px 20px;text-align:center;color:var(--ink-3);font-size:13px;
+  background:var(--paper);border:1px solid var(--line);border-radius:16px}
+.trash-panel{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft)}
+.trash-panel.on{display:block}
+.trash-empty{font-size:11.5px;color:var(--ink-3);padding:2px 0 8px}
+.trash-row{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12px;color:var(--ink-2);
+  border-top:1px solid var(--line-soft)}
+.trash-row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:1000px){
+  .filterbar{top:72px}
+  .fb-chips{order:3;flex-basis:100%}
+  .fb-tools{margin-left:auto}
+}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);z-index:90;
+  background:#1E2740;color:#F2F6FC;padding:10px 16px;border-radius:12px;font-size:12.5px;
+  box-shadow:0 10px 30px rgba(62,58,53,.22);opacity:0;transition:.28s ease;pointer-events:none;max-width:80vw}
+.toast.on{opacity:.97;transform:translateX(-50%) translateY(0)}
+
+/* chart */
+.chartbox{width:100%;overflow:auto}
+.hlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.hlist span{font-size:11.5px;color:var(--ink-2);background:#EEF3FA;border:1px solid var(--line-soft);
+  border-radius:999px;padding:3px 9px;font-variant-numeric:tabular-nums}
+
+@media (max-width:860px){
+  .bd-row{grid-template-columns:104px 1fr 48px 92px;gap:8px}
+  .bd-qty{display:none}
+  .bd-name{white-space:normal}
+  .bd-panel{padding:14px 14px 10px}
+}
+@media (max-width:1000px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .tbl{overflow-x:auto}
+  .row{min-width:910px}
+  .wrap{padding:0 16px}
+}
+@media (max-width:620px){
+  .ghd{flex-wrap:wrap;row-gap:5px}
+  .ghd .sp{display:none}
+  .ghd .lo{margin-left:auto}
+}
+
+/* ---------- 手机布局（≤760px）：以 iPhone 13 Pro Max 为准 ----------
+   参考图的语言：雾蓝灰底、白色大圆角卡片、亮蓝强调、藏青按钮、票券缺口、
+   底部标签栏、大量留白。桌面表格在这里换成三段式行卡片，功能不改。 */
+@media (max-width:760px){
+  .wrap{padding:0 16px 96px}
+  .topbar .wrap{height:auto;flex-wrap:wrap;padding:12px 0 10px;row-gap:11px}
+  .brand .sub{display:none}
+  .brand h1{font-size:17px;font-weight:700}
+  .mark{width:36px;height:36px;border-radius:12px}
+  .actions{display:flex;width:100%;gap:7px;overflow-x:auto;flex-wrap:nowrap;
+    scrollbar-width:none;padding-bottom:2px}
+  .actions::-webkit-scrollbar{display:none}
+  .actions .btn{padding:8px 14px;font-size:12.5px;flex:none;border-radius:999px}
+  .actions .btn.primary{flex:none}
+  .metarow{font-size:11px;gap:7px;margin:16px 0 14px;color:#EAF0FA}
+  .metarow b{color:#fff}
+  .metarow .dot{background:rgba(255,255,255,.5)}
+  .due{background:rgba(255,255,255,.9);color:#B96A33}
+  .filterbar{position:static;margin:0 0 14px;padding:11px 12px;border-radius:18px;
+    background:rgba(255,255,255,.92);box-shadow:0 6px 20px rgba(40,66,120,.08)}
+  .fb-chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    padding-bottom:2px;scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 22px),transparent 100%);
+    mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 22px),transparent 100%)}
+  .fb-chips::-webkit-scrollbar{display:none}
+  .fb-chip{border-radius:999px;padding:6px 13px}
+  .fb-search{width:100%;flex:1;border-radius:999px;padding:8px 14px}
+  .fb-tools{width:100%}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-bottom:18px}
+  .card{padding:15px 16px 16px;border-radius:22px}
+  .card .v{font-size:21px}
+  .card .d{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;line-height:1.5;font-size:11px}
+  /* 主卡做票券缺口：左右各咬掉一个半圆，露出底下的雾蓝背景 */
+  .card.hl{-webkit-mask-image:radial-gradient(circle 8px at 0 52%,transparent 97%,#000 100%),
+    radial-gradient(circle 8px at 100% 52%,transparent 97%,#000 100%);
+    -webkit-mask-composite:source-in;mask-composite:intersect}
+  .group{border-radius:22px;margin-bottom:14px;box-shadow:0 8px 26px rgba(40,66,120,.10)}
+  .ghd{padding:13px 16px;gap:8px;border-radius:22px 22px 0 0}
+  .ghd h2{font-size:14px;font-weight:700}
+  .ghd .lo{flex-basis:100%;margin-left:0;text-align:right;font-size:11px}
+
+  .tbl{overflow:visible}
+  .row{min-width:0}
+  .row.head{display:none}
+  .row.body{
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    grid-template-areas:
+      "st ck nm nm nm nm nm nm nm qt ac ac"
+      "cu cu cu cu jd jd jd jd cp cp cp cp"
+      "lo lo lo av av av ch ch ch tk tk tk";
+    gap:9px 7px;padding:15px 16px;
+  }
+  .row.body>*{min-width:0}
+  .row.body>*:nth-child(1){grid-area:st}
+  .row.body>*:nth-child(2){grid-area:ck}
+  .row.body>*:nth-child(3){grid-area:nm}
+  .row.body>*:nth-child(4){grid-area:qt}
+  .row.body>*:nth-child(5){grid-area:cu}
+  .row.body>*:nth-child(6){grid-area:jd}
+  .row.body>*:nth-child(7){grid-area:cp}
+  .row.body>*:nth-child(8){grid-area:lo}
+  .row.body>*:nth-child(9){grid-area:av}
+  .row.body>*:nth-child(10){grid-area:ch;text-align:left}
+  .row.body>*:nth-child(11){grid-area:tk}
+  .row.body>*:nth-child(12){grid-area:ac}
+  .row.body .num::before{
+    display:block;font-size:9.5px;color:var(--ink-3);font-weight:500;
+    letter-spacing:.04em;margin-bottom:3px;line-height:1;
+  }
+  .row.body .num.cur::before{content:"淘宝价"}
+  .row.body .num.jd::before{content:"京东价"}
+  .row.body>*:nth-child(7)::before{content:"差价"}
+  .row.body .num.low::before{content:"6 个月最低"}
+  .row.body .num.avg::before{content:"6 个月均价"}
+  .row.body>*:nth-child(10)::before{
+    content:"状态";display:block;font-size:9.5px;color:var(--ink-3);
+    letter-spacing:.04em;margin-bottom:4px;line-height:1;
+  }
+  .row.body>*:nth-child(11)::before{
+    content:"走势";display:block;font-size:9.5px;color:var(--ink-3);
+    letter-spacing:.04em;margin-bottom:4px;line-height:1;
+  }
+  .row.body .c-name .bd{font-size:13px;font-weight:700}
+  .row.body .c-name .nm{font-size:12px}
+  .row.body .c-name .nt{font-size:10.5px}
+  .row.body .num{font-size:12.5px}
+  .row.body .num.cur{font-size:14px}
+  .row.body .c-qty{font-size:11px}
+  .row.body .c-spark{justify-content:flex-start}
+  .row.body .c-act{justify-content:flex-end}
+
+  /* 触屏：点按目标放大一圈，减少误触 */
+  .star{padding:7px;margin:-7px}
+  .ico{padding:8px;margin:-4px}
+  .sp{padding:7px 4px}
+  .cb input{width:24px;height:24px}
+  .chip{font-size:10.5px;padding:3px 9px}
+
+  /* 弹窗：底部抽屉 + 安全区 */
+  .ovl{padding:0;align-items:flex-end}
+  .modal{max-width:100%;border-radius:24px 24px 0 0;max-height:92vh;
+    padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+  .mhd h3{font-size:17px}
+  .fld input,.fld select,.fld textarea{font-size:16px;padding:11px 12px;border-radius:12px}
+  .grid2{grid-template-columns:1fr;gap:14px}
+  .mfoot{flex-wrap:wrap;gap:9px}
+  .mfoot .btn{flex:1 1 auto;padding:11px 14px;border-radius:999px}
+  .splitbox .sb-row input{width:104px;font-size:16px}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px));max-width:88vw}
+  .bd-row{grid-template-columns:92px 1fr 44px 96px;gap:7px}
+  .help h4{font-size:14px}
+  .help p,.help li{font-size:13px}
+}
+
+/* 底部标签栏：默认隐藏，仅手机显示 */
+.tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;
+  height:calc(62px + env(safe-area-inset-bottom,0px));
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  background:rgba(255,255,255,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid rgba(255,255,255,.7);box-shadow:0 -6px 24px rgba(30,50,90,.10)}
+.tabbar .tb{display:flex;align-items:center;justify-content:center}
+.tabbar button{flex:1;border:0;background:transparent;color:var(--ink-3);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:10.5px;font-weight:500;padding:8px 0;-webkit-tap-highlight-color:transparent}
+.tabbar button svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.tabbar button.on{color:var(--blue)}
+.tabbar button:active{opacity:.6}
+.tabbar button.add .plus{width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,#4E86FF,#1B3A8C);color:#fff;display:grid;place-items:center;
+  box-shadow:0 6px 16px rgba(47,107,255,.35);margin-top:-14px}
+.tabbar button.add .plus svg{width:22px;height:22px;stroke:#fff}
+.tabbar button.add{color:var(--ink-3)}
+@media (max-width:760px){ .tabbar{display:flex} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark">PC</div>
+      <div>
+        <h1>装机比价</h1>
+        <div class="sub">淘宝购物车 · 目标 2027 年 618 入手</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="btnSync" title="写入 配件清单.json 并重建 HTML">保存到源文件</button>
+      <button class="btn" id="btnAdd">＋ 添加商品</button>
+      <button class="btn" id="btnImport">导入价格</button>
+      <button class="btn" id="btnExport">导出数据</button>
+      <button class="btn ghost" id="btnHelp">说明</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="metarow">
+    <span>数据更新于 <b id="mUpd">—</b></span><span class="dot"></span>
+    <span>价格历史 <b id="mHist">0</b> 个日期</span><span class="dot"></span>
+    <span>基准：淘宝双11 价 · 官方渠道</span>
+    <span id="mDue"></span>
+  </div>
+
+  <div class="cards">
+    <div class="card hl pickable" id="cardBuild" role="button" tabindex="0"
+         aria-expanded="false" aria-controls="buildDetail" title="点开看这套里都买了哪些">
+      <div class="k"><span>一套成机</span>
+        <span class="exp">明细
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 3.6L5 6.6l3-3"/></svg>
+        </span>
+      </div>
+      <div class="v" id="cBuild">—</div><div class="d" id="cBuildD">每类取当前最低的一件</div>
+    </div>
+    <div class="card"><div class="k">全车合计</div><div class="v" id="cAll">—</div><div class="d">含同类全部备选</div></div>
+    <div class="card"><div class="k">已购入</div><div class="v" id="cBought">—</div><div class="d" id="cBoughtN">0 件</div></div>
+    <div class="card"><div class="k">还能省</div><div class="v" id="cSave">—</div><div class="d">全部等到 6 个月最低</div></div>
+  </div>
+
+  <div class="bd-panel" id="buildDetail">
+    <div class="bd-hd">
+      <span class="bd-title">这套机器 = 每类取最想要的一件<span id="bdAllNote"></span>，共 <b id="bdCount">0</b> 件</span>
+      <span class="bd-sub" id="bdSub">价格取淘宝 / 京东里更低的那个平台</span>
+      <button class="bd-close" id="bdClose">收起 ▲</button>
+    </div>
+    <div class="bd-list" id="bdList"></div>
+    <div class="bd-skip" id="bdSkip"></div>
+    <div class="bd-foot"><span>合计</span><span id="bdTotal">—</span></div>
+  </div>
+
+  <div class="filterbar" id="filterBar">
+    <div class="fb-row">
+      <span class="fb-label">只看</span>
+      <div class="fb-chips" id="fbChips"></div>
+      <div class="fb-tools">
+        <input class="fb-search" id="fbSearch" type="search" placeholder="搜型号 / 品牌" autocomplete="off"
+               title="按品牌、型号、昵称、备注筛选">
+        <button class="btn ghost sm" id="fbClear" title="清除全部筛选">清除</button>
+        <button class="btn ghost sm" id="btnTrash" style="display:none" title="查看并恢复删掉的商品">已删除 <b id="trashN">0</b></button>
+        <span class="fb-count" id="fbCount" title="筛选只影响显示；顶部合计始终按全部商品计算"></span>
+      </div>
+    </div>
+    <div class="trash-panel" id="trashPanel"></div>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="foot">
+    <div class="legend">
+      <span><i>史低</i> = 当前价 ≤ 近 6 个月官方最低价</span>
+      <span><i>可入</i> = 当前价 ≤ 近 6 个月均价</span>
+      <span><i>偏高</i> = 高于均价</span>
+      <span><i>待核</i> = 还没查到历史价</span>
+      <span><i>差价</i> = 只算淘宝 vs 京东官方渠道；板 U 套装的京东价按 CPU + 主板两件加总</span>
+    </div>
+    <div>价格仅覆盖官方渠道（天猫旗舰店 / 京东自营 / 京东品牌旗舰店）</div>
+  </div>
+</div>
+
+<!-- 添加 / 编辑 -->
+<div class="ovl" id="ovlForm">
+  <div class="modal">
+    <div class="mhd">
+      <div><h3 id="fTitle">添加商品</h3><p>价格填「你实际会付的最终价」，不用填原价</p></div>
+      <button class="x" data-close>×</button>
+    </div>
+    <form id="form" class="grid2" autocomplete="off">
+      <div class="fld"><label>类目</label><input id="fCat" list="cats" placeholder="如：内存条" required><datalist id="cats"></datalist></div>
+      <div class="fld"><label>品牌</label><input id="fBrand" placeholder="如：品牌名" required></div>
+      <div class="fld full"><label>型号 / 规格 <span class="hint">（你手改过的字段会被锁住，以后文件更新不会覆盖）</span></label><input id="fModel" placeholder="如：型号名称 规格参数" required></div>
+      <div class="fld"><label>昵称 <span class="hint">（可留空，如：主力卡）</span></label><input id="fNick" maxlength="24" placeholder="给这件起个好记的名字"></div>
+      <div class="fld"><label>数量</label><input id="fQty" type="number" min="1" step="1" value="1"></div>
+      <div class="fld"><label>淘宝价 ¥</label><input id="fPrice" type="number" min="0" step="0.01" placeholder="淘宝/天猫到手价" required></div>
+      <div class="fld"><label id="fJDLabel">京东价 ¥<span class="hint">（可留空）</span></label><input id="fJD" type="number" min="0" step="0.01" placeholder="京东自营/官方旗舰店"></div>
+      <div class="fld"><label>6 个月最低 ¥<span class="hint">（可留空）</span></label><input id="fLow" type="number" min="0" step="0.01"></div>
+      <div class="fld"><label>6 个月均价 ¥<span class="hint">（可留空）</span></label><input id="fAvg" type="number" min="0" step="0.01"></div>
+      <div class="fld full"><label>备注（店铺 / 补贴）</label><input id="fNote" placeholder="如：天猫 品牌旗舰店 · 百亿补贴"></div>
+      <div class="fld full"><label>别家店报价 <span class="hint">（一行一家，店名 + 价格；只作对比参考，不参与一套成机结算）</span></label>
+        <textarea id="fQuotes" rows="2" placeholder="某旗舰店 2588.49&#10;另一家旗舰店 2699"></textarea></div>
+      <div class="fld full"><label>今天这条价格要写进历史吗？</label>
+        <label style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-2)">
+          <input id="fHist" type="checkbox" checked style="width:16px;height:16px;accent-color:#7F947F"> 写入 <span id="fToday">—</span> 的价格记录
+        </label>
+      </div>
+      <div class="splitbox" id="fSplit" style="display:none">
+        <div class="sb-hd" id="fSplitHd"></div>
+        <div id="fSplitRows"></div>
+        <div class="sb-ft">
+          <span>两件合计</span><b id="fSplitSum">—</b>
+          <span class="sp"></span>
+          <button type="button" class="btn sm" id="btnUseSum">用这个合计值</button>
+        </div>
+        <div class="sb-tip" id="fSplitTip"></div>
+      </div>
+    </form>
+    <div class="mfoot">
+      <span class="left" style="display:flex;gap:8px">
+        <button class="btn ghost" id="btnDel" style="display:none;color:#A98374">删除这件</button>
+        <button class="btn ghost" id="btnRevert" style="display:none;color:var(--ink-3)">恢复文件里的信息</button>
+      </span>
+      <button class="btn" data-close>取消</button>
+      <button class="btn primary" id="btnSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 导入 -->
+<div class="ovl" id="ovlImport">
+  <div class="modal">
+    <div class="mhd">
+      <div><h3>导入价格</h3><p>选一个 JSON 文件，按日期写进历史，旧日期不会被覆盖</p></div>
+      <button class="x" data-close>×</button>
+    </div>
+    <div class="help">
+      <p>支持两种写法，<code>items</code> 里用商品 <code>id</code> 对应：</p>
+      <pre><code>{
+  "date": "2026-11-16",
+  "source": "定时任务 · 官方渠道",
+  "items": { "商品id-1": 7288, "商品id-2": 3520 },
+  "jd":    { "商品id-1": 6099, "商品id-2": 3288 },
+  "meta": {
+    "low": { "商品id-1": 4799 },
+    "avg": { "商品id-1": 5800 }
+  }
+}</code></pre>
+      <p><code>items</code> 是淘宝/天猫价，<code>jd</code> 是京东价，<code>meta</code> 用来顺手更新「6 个月最低 / 均价」，都可选。</p>
+      <p>落盘位置：把文件放进这个 HTML 同目录的 <code>prices/</code> 文件夹即可。<br>
+      同一天重复导入只更新当天那一条，其他日期原样保留。</p>
+      <p class="note">没有 JSON 也能救急：点某一行右侧的铅笔图标，直接改「当前价」并勾上「写入今天」，效果一样。</p>
+    </div>
+    <div class="mfoot">
+      <input type="file" id="fileInput" accept=".json,application/json" style="display:none">
+      <button class="btn" data-close>取消</button>
+      <button class="btn primary" id="btnPick">选择 JSON 文件</button>
+    </div>
+  </div>
+</div>
+
+<!-- 走势 -->
+<div class="ovl" id="ovlChart">
+  <div class="modal wide">
+    <div class="mhd">
+      <div><h3 id="chTitle">价格走势</h3><p id="chSub">—</p></div>
+      <button class="x" data-close>×</button>
+    </div>
+    <div class="chartbox" id="chBox"></div>
+    <div class="hlist" id="chList"></div>
+  </div>
+</div>
+
+<!-- 说明 -->
+<div class="ovl" id="ovlHelp">
+  <div class="modal">
+    <div class="mhd">
+      <div><h3>怎么用</h3><p>三件事：勾已购、收价格、加商品</p></div>
+      <button class="x" data-close>×</button>
+    </div>
+    <div class="help">
+      <h4>1. 日常</h4>
+      <p>买过的点最左边的方框，整行会变暗、价格划掉，顶部「已购入」会自动累计，不会和没买的混在一起看错。</p>
+      <p><b>名字 / 型号写错了？</b>点行尾的铅笔直接改，点「保存」就写回 <code>配件清单.json</code> 并重建本文件，
+      刷新、换浏览器都在。顶部「保存到源文件」按钮可以随时手动同步一次。</p>
+      <p><b>想给商品起个昵称？</b>比如「主力卡」「待入手」。鼠标移到商品行上，品牌后面会浮出「＋ 昵称」，
+      点一下直接打开编辑窗，光标就落在昵称框里；已经有昵称的，点那个小标签就能改。编辑窗里也有「昵称」一栏，
+      添加新商品时同样能填。留空就不显示，清空就是删掉昵称，改完点「保存」一样写回源文件，以后重建不会丢。
+      顶部搜索框也能直接搜昵称。</p>
+      <p>顶部按钮显示当前状态：配了云端就写「保存到云端」，没配就写「保存到源文件」。
+       不管哪种，保存成功会有提示；失败时数据仍暂存在浏览器，不会丢，点一下按钮重试即可。</p>
+       <p>电脑上如果没配云端，双击桌面的「电脑装机小助手」打开即可，它会顺带把本地服务拉起来，
+       <b>关掉这个页面，服务几秒后自己退出</b>。配了云端之后就不依赖它了，浏览器直接打开部署好的网址就行。</p>
+      <p>顶部「<b>一套成机</b>」那张卡片，鼠标移上去右上角会亮出「明细」，<b>点一下展开清单</b>：
+      每一类挑了哪一件、来自淘宝还是京东、小计多少、合计多少，一目了然；再点一次或按 <code>Esc</code> 收起。</p>
+      <p>普通类目是备选，没点星时取更便宜的一件，<b>点了星就取点星的那件</b>；<b>机箱风扇不是二选一</b>：正叶和反叶型号不同、风向相反，
+      两件都会列进明细、都算进合计，表格里也会标上「都要买」。哪些类目要「全部都要」写在
+       <code>配件清单.json</code> 的 <code>pickAllCats</code> 里，以后加同类目新商品会自动一起计入。</p>
+      <p><b>哪个类目不想算进整机？</b>每个类目头上都有一个「<b>计入整机</b>」的勾选，默认全部计入。
+      取消勾选后，这一类就不参与「一套成机」的金额和明细，整组会变淡，右边改成显示「不计入 · 若买 ¥…」；
+      表格里照常比价、照常看走势、照常勾已购。展开明细时底部会写明有哪几类没算、若都买另需多少钱。
+      另外三张卡片（全车合计 / 已购入 / 还能省）仍按全部商品算，真买了也会照实计入已花金额。</p>
+      <p><b>机箱分两类，只能选一个。</b>「风道机箱」排在前面，「海景房机箱」紧随其后，两者互斥：
+      勾了一类，另一类会自动变成不计入，保证一套机器只算一台机箱。想换风格就点另一个的勾选。
+      互斥关系写在 <code>配件清单.json</code> 的 <code>exclusiveGroups</code> 里。</p>
+       <p><b>商品多了不好翻？</b>列表上方那一排是筛选器：点「显卡」只看显卡，点几个就同时看几个，
+       再点一次取消；右边还能直接搜型号、品牌或昵称。<b>筛选只影响显示</b>，顶部四个合计都不受筛选影响，
+      刷新页面自动回到「全部」。</p>
+      <p><b>想自己定哪件进这套机器？</b>点每行最左边的「☆」，它会变成「★」，这件就是该类目的最优选：
+      自动排到组内第一行，<b>结算也按它算</b>，哪怕同类里有更便宜的。每个类目只能点一颗，点第二颗会自动取消第一颗；
+      再点一下取消，组内顺序和结算金额立刻复原。没点星的类目，组内按到手价（淘宝 / 京东取更低 × 数量）由低到高排，
+      结算取最低的那件。类目之间的顺序保持固定，价值高的放前面，不会跟着价格跳。
+      「机箱风扇」这类「都要买」的类目不显示星星，仍然两件都算进成机；
+      取消勾选「计入整机」的类目仍能点星，只是那颗星暂时不影响结算，勾回来就继续作数。</p>
+      <p><b>不想要某件商品？</b>点行尾的垃圾桶（编辑窗口左下角也有「删除这件」），确认后立刻写回源文件，
+      以后重建也不会自己跑回来。删错了点筛选条上的「已删除 N」就能恢复，价格历史一起回来；
+      这份回收记录只存在本浏览器，清缓存后就没有了。</p>
+
+      <h4>2. 在手机上用（伪 App）</h4>
+      <p>这个页面已经部署在 GitHub Pages 上。手机 Safari 打开部署好的网址，点分享按钮 →
+      <b>添加到主屏幕</b>，桌面就会多一个带图标的 App，点开全屏运行。首次打开时到
+      <b>7. 云端同步</b>填一次密钥，之后这台设备自动记住。</p>
+      <p>手机上看到的是<b>同一份数据</b>：改价格、加商品、勾已购都会写进你自己的私有仓库，
+      电脑下次打开会自动拉到。屏幕窄的时候表格会变成卡片：每件商品分三行，
+      第一行是名字和数量，第二行是淘宝价 / 京东价 / 差价，第三行是历史价、状态和走势；
+      底部有四个标签，筛选条可以左右滑动。</p>
+      <p class="note"><b>最大的变化</b>：数据不再依赖电脑。你在外面用手机加商品、改价格，直接存进云端，
+      电脑合盖、关机都不影响。回到电脑打开页面，自动拉取，手机上改的就在了。<br>
+      <b>没网的时候</b>：App 仍能打开，看到上次联网的页面快照；这期间的改动会暂存在手机里，
+      联网后自动传到云端。<br>
+      <b>两台设备同时改了</b>：以最后保存到云端的为准，另一台下次打开会拉到最新，旧数据不会把新的盖掉。</p>
+
+      <h4>3. 价格怎么进来</h4>
+      <p>价格走两条路：<b>导入</b>（主要）和<b>手动</b>（补充）。导入：AI 检索一轮官方渠道价（天猫旗舰店 /
+      京东自营 / 京东品牌旗舰店），生成 <code>prices/日期.json</code>，你在这个页面点 <b>导入价格</b> →
+      选那个文件，全部价格就刷新了，而且会<b>按日期追加</b>到历史里，以前的日子一条都不动。</p>
+      <p>想手动补一天也行：点行尾的铅笔，改「当前价」，勾上「写入今天」。</p>
+      <p class="note">定时任务每 3 天（早上 9 点）自动生成一份检索清单并提醒你。它<b>不自动改价</b>：
+      搜到的多是过时快照价，补贴叠完的到手价更是查不到，每一笔都该有人当场核对。
+      所以流程是「清单 → 你交给 AI 检索 → 确认后导入」，顶部「该导入了」的提醒按<b>上次导入的日期</b>算，
+      改商品信息、改昵称都不会把它重置。</p>
+
+      <h4>4. 加新商品</h4>
+      <p>最省事的是把商品截图发给 AI Agent，新商品会进 <code>配件清单.json</code>；
+      如果本机配了云端，再点一下「上传到云端」，手机就能拉到。<br>
+      在外面就点底部 <b>＋ 添加</b>（电脑上是右上角「＋ 添加商品」）自己填，
+      填完点「保存到云端」，立刻写进你的私有仓库，不用等电脑开机。</p>
+      <p>两边改动互不覆盖：你在网页改的字段和 AI 更新的价格各算各的，删除过的商品也不会被重建加回来。
+      价格历史按日期追加的规则不变，现在也一并写回源文件，折线图的数据永久留得住。</p>
+
+      <h4>5. 淘宝 / 京东怎么比</h4>
+      <p>每行两个价格：「淘宝价」是你购物车里的最终价，「京东价」是同款在京东自营/官方旗舰店的价格。
+      <b>差价</b>那列直接告诉你谁便宜多少（绿色=京东更便宜，陶土色=淘宝更便宜）。
+      「一套成机」「还能省」「状态」全部按<b>两个平台里更低的那个</b>来算，所以可以放心交叉平台买；
+      「一套成机」里标「都要买」的类目，按里面每一件分别取更低价再累加。</p>
+      <p>京东价空着的时候显示「—」，<b>点一下那个 —</b>就能直接填，不用绕去编辑窗口。</p>
+      <p><b>同一件东西在别家店的价格</b>（比如同一个板 U 套装，华硕旗舰店和 AMD 旗舰店都在卖）：
+      淘宝价下面会用小字再列一行，写成「店名 价格」，比当前价更低的会变绿。这类报价<b>只做参考</b>，
+      不参与排序、差价和一套成机的结算；想改用那家店，编辑窗里把那个数字填成「淘宝价」就行。
+      在编辑窗的「别家店报价」里，一行写一家（店名 + 价格），改完点保存即写回源文件。</p>
+      <div class="note" style="margin-top:12px">
+        <b>CPU / 主板套装为什么京东价是「2 件合计」</b><br>
+        淘宝卖的是「板 U 套装」一整件，京东不卖这个套装，而是把 <b>CPU</b> 和 <b>主板</b> 当两个单品分开上架，
+        拿整串套装名去搜自然搜不到。所以这两行的京东价 = 两个单品京东价之和，价格子右边会标「2 件合计」，
+        鼠标停上去能看到每一件分别是多少、来自哪家店。<br>
+        点京东价那一格打开编辑窗，可以直接改两个单品价，总价自动算；也可以切成「手动填总额」自己填一个到手价。
+        <b>每 3 天的价格检索清单</b>里这两个商品也会自动列出两个单品分别去检索，不会再因为「搜不到套装」而留空。
+      </div>
+
+      <h4>6. 状态怎么判断</h4>
+      <ul>
+        <li><b>史低</b>：当前价 ≤ 近 6 个月官方最低价 → 页面会轻轻标绿</li>
+        <li><b>可入</b>：当前价 ≤ 近 6 个月均价（你说的「低于中间值就接受」就是这条）</li>
+        <li><b>偏高</b>：高于均价，建议再等等</li>
+        <li><b>待核</b>：还没查到可靠的历史价</li>
+      </ul>
+
+      <h4>7. 云端同步</h4>
+      <p>开启后，数据存在你自己的 GitHub <b>私有仓库</b>里，手机和电脑都从那里读写，<b>电脑合盖也不影响</b>。
+      页面本身是公开的空壳，不含你的商品数据；只有填了密钥的这台设备能读写你的清单。密钥只存在本浏览器，不会写进页面源码。</p>
+      <div class="cloudbox">
+        <div class="fld"><label>GitHub 用户名（owner）</label><input id="cfOwner" placeholder="如：wen" autocomplete="off" spellcheck="false"></div>
+        <div class="fld"><label>私有仓库名（repo）</label><input id="cfRepo" placeholder="如：pcbuild-data" autocomplete="off" spellcheck="false"></div>
+        <div class="fld"><label>文件名</label><input id="cfPath" value="配件清单.json" autocomplete="off" spellcheck="false"></div>
+        <div class="fld"><label>私人访问令牌（token） <span class="hint">（只存本机浏览器）</span></label>
+          <input id="cfToken" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false"></div>
+        <div class="cf-status" id="cfStatus">尚未配置云端</div>
+        <div class="cf-btns">
+          <button class="btn primary sm" id="cfSave">保存设置</button>
+          <button class="btn sm" id="cfPull">从云端拉取</button>
+          <button class="btn sm" id="cfPush">上传到云端</button>
+          <button class="btn ghost sm" id="cfClear">清除</button>
+        </div>
+        <p class="hint" style="margin:8px 0 0;line-height:1.6">令牌需勾选仓库的 <b>Contents 读写</b> 权限。首次使用：先在 GitHub 建一个私有仓库，
+        在本机点「上传到云端」把当前清单传上去；手机端填同样的四项，点「从云端拉取」即可拿到全部数据。
+        以后每次改动点顶部「保存到云端」即写回，手机在外面也能随时加商品。</p>
+      </div>
+
+      <h4>8. 数据出问题</h4>
+      <p>点下面的按钮可以清空本浏览器的缓存，重新从源文件载入。已经写回 <code>配件清单.json</code> 的内容不会丢。</p>
+    </div>
+    <div class="mfoot">
+      <button class="btn ghost left" id="btnReset" style="color:#A98374">恢复内置数据</button>
+      <button class="btn" data-close>关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 底部标签栏（手机） -->
+<nav class="tabbar" id="tabbar">
+  <button class="tb on" data-tab="home" aria-label="汇总">
+    <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.5 20v-6h5v6"/></svg>
+    <span>汇总</span>
+  </button>
+  <button class="tb" data-tab="list" aria-label="清单">
+    <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+    <span>清单</span>
+  </button>
+  <button class="tb add" data-tab="add" aria-label="添加商品">
+    <span class="plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+    <span>添加</span>
+  </button>
+  <button class="tb" data-tab="me" aria-label="说明与设置">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+    <span>我的</span>
+  </button>
+</nav>
+
+<script>
+const SEED = {
+  "updatedAt": "",
+  "lastImport": "2026-11-13",
+  "builtAt": "2026-11-16 17:38",
+  "rev": 0,
+  "deleted": [],
+  "stars": [],
+  "products": [],
+  "history": {},
+  "pickAllCats": [
+    {
+      "cat": "机箱风扇",
+      "note": "正叶和反叶是两种不同型号、风向相反，不是二选一，两个都要买"
+    }
+  ],
+  "excludedCats": [],
+  "exclusiveGroups": [
+    {
+      "cats": [
+        "风道机箱",
+        "海景房机箱"
+      ],
+      "note": "整机只装一个机箱，两类互斥；勾一类会自动取消另一类"
+    }
+  ],
+  "restored": [],
+  "trash": []
+};
+const TODAY = "2026-11-16";
+const KEY = "pcbuild.v2";
+
+const CAT_COLOR = {
+  "显卡":"#B3A0A0","内存条":"#A2ADB6","CPU / 主板套装":"#C0AB93","固态硬盘":"#A9A4B4",
+  "电源":"#C4B48F","风道机箱":"#9DA9A6","海景房机箱":"#ADA49F","CPU 散热器":"#A8B4A1",
+  "机箱风扇":"#9EAFAD","显示器":"#92A8A3","周边配件":"#B2A5B7"
+};
+/* 类目之间的固定顺序。风道机箱排在前面，海景房机箱紧随其后 */
+const CAT_ORDER = ["人体工学椅","显卡","内存条","CPU / 主板套装","固态硬盘","显示器","电源","风道机箱","海景房机箱","CPU 散热器","机箱风扇","周边配件"];
+
+/* 「全部都要买」的类目：这些不是同款备选，而是不同部件（比如正叶 / 反叶风扇），
+   成机清单里要全部列出、全部计价。规则写在 配件清单.json 的 pickAllCats 里，
+   以后新增这类类目只改数据，不用改代码。规则直接读文件内嵌的 SEED，
+   浏览器里存的旧数据不会影响它。*/
+const PICK_ALL = (()=>{
+  const m = new Map();
+  (SEED.pickAllCats||[]).forEach(r=>{
+    const cat = typeof r === "string" ? r : (r && r.cat);
+    if(cat) m.set(cat, (typeof r === "string" ? "" : (r && r.note)) || "");
+  });
+  return m;
+})();
+const isPickAll = cat => PICK_ALL.has(cat);
+const pickAllText = () => [...PICK_ALL.keys()].join("、");
+
+/* 「不计入一套成机」的类目：由表格里每个类目头上的勾选决定，存在 S.excludedCats，
+   随「保存到源文件」写回 配件清单.json。默认全部计入，你取消哪个才排除哪个。
+   规则是通用的，不再有针对某个类目的硬编码（周边配件、机箱风扇都用同一套）。*/
+function isExcluded(cat){ return (S.excludedCats||[]).includes(cat); }
+function excludedText(){ return (S.excludedCats||[]).join("、"); }
+
+/* 互斥的类目组：整机只能选一个，比如「风道机箱」和「海景房机箱」。
+   勾一类会自动取消另一类，否则一套机器会算出两台机箱的钱。
+   规则写在 配件清单.json 的 exclusiveGroups 里，页面只读。*/
+const SIBLINGS = (()=>{
+  const m = new Map();
+  (SEED.exclusiveGroups||[]).forEach(g=>{
+    const cats = (g && g.cats) || [];
+    cats.forEach(c=> m.set(c, cats.filter(x=> x!==c)));
+  });
+  return m;
+})();
+const siblingsOf = cat => SIBLINGS.get(cat) || [];
+
+/* 服务地址跟着打开方式走：
+   手机 / 电脑浏览器打开 http://192.168.x.x:8765 或 http://xxx.local:8765 时，
+   保存请求发回同一地址；file:// 直接双击 HTML 时退回本机固定地址。 */
+const SYNC_BASE = (location.protocol === "http:" || location.protocol === "https:")
+  ? location.origin
+  : "http://127.0.0.1:8765";
+const SYNC_URL = SYNC_BASE + "/api/save";
+let syncTimer = null;
+/* 有没有「改了但还没成功写回源文件」的改动。手机合盖期间改的东西都挂在这上面，
+   回连后由自动补存送回电脑。没改动就不发请求，免得白白重建一次文件。 */
+let dirty = false;
+
+function load(){
+  let stored = null;
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const s = JSON.parse(raw);
+      if(s && Array.isArray(s.products)) stored = normalize(s);
+    }
+  }catch(e){ console.warn("本地数据坏了，回退内置", e); }
+  if(!stored) return normalize(JSON.parse(JSON.stringify(SEED)));
+
+  // rev 变了说明源文件被重建过。SEED 是双方改动的合集，以它为准，
+  // 只把本地「还没来得及写回文件」的改动并上去。
+  if(stored.rev !== SEED.rev){
+    const added = mergeFile(stored);
+    stored.rev = SEED.rev;
+    try{ localStorage.setItem(KEY, JSON.stringify(stored)); }catch(e){}
+    if(added.length) setTimeout(()=> toast(`文件已更新，同步了 ${added.length} 个新商品`), 500);
+  }
+  return stored;
+}
+
+function mergeFile(stored){
+  const added = [];
+  const localById = new Map(stored.products.map(p=>[p.id,p]));
+  const deleted = new Set([...(stored.deleted||[]), ...(SEED.deleted||[])]);
+  stored.deleted = [...deleted];
+
+  const products = SEED.products.map(sp=>{
+    const cur = localById.get(sp.id);
+    if(!cur){
+      added.push(sp.brand + " " + sp.model);
+      return Object.assign({}, sp, {bought:false, userEdit:[]});
+    }
+    const out = Object.assign({}, sp);
+    const locked = Array.isArray(cur.userEdit) ? cur.userEdit : [];
+    locked.forEach(k=>{ if(k in cur) out[k] = cur[k]; });
+    out.bought = !!cur.bought;
+    out.userEdit = locked.slice();
+    return out;
+  });
+  stored.products.forEach(p=>{
+    if(!SEED.products.some(x=>x.id===p.id) && !deleted.has(p.id)) products.push(p);
+  });
+  stored.products = products;
+
+  stored.history = stored.history || {};
+  const fileHist = SEED.history || {};
+  Object.keys(fileHist).forEach(id=>{
+    const base = {};
+    (fileHist[id]||[]).forEach(x=> base[x.d]=x.p);
+    (stored.history[id]||[]).forEach(x=> base[x.d]=x.p);
+    stored.history[id] = Object.keys(base).sort().map(d=>({d, p:base[d]}));
+  });
+  // 文件更新后，若点过星的商品被移走或改了类目，星标要跟着失效
+  pruneStars(stored);
+  return added;
+}
+
+/* ---------- 云端同步（GitHub 私有仓库，页面公开、数据私有） ----------
+   页面本身没有商品数据，数据全在用户自己的私有仓库 JSON 里。
+   密钥只存本浏览器（CKEY），不写进页面源码。手机和电脑各填一次即可。
+   GitHub Contents API 支持跨域，手机浏览器可直接读写，不需要自建服务器。 */
+const CKEY = "pcbuild.cloud.v1";
+const GITHUB_API = "https://api.github.com";
+function cloudCfg(){
+  try{
+    const c = JSON.parse(localStorage.getItem(CKEY) || "null");
+    return (c && c.owner && c.repo && c.token) ? c : null;
+  }catch(e){ return null; }
+}
+const cloudOn = ()=> !!cloudCfg();
+function utf8ToB64(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  bytes.forEach(b=> bin += String.fromCharCode(b));
+  return btoa(bin);
+}
+function b64ToUtf8(b64){
+  const bin = atob(String(b64||"").replace(/\s/g,""));
+  const bytes = Uint8Array.from(bin, c=> c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+function cloudHeaders(c){
+  return {"Authorization":"Bearer "+c.token, "Accept":"application/vnd.github+json",
+          "X-GitHub-Api-Version":"2022-11-28"};
+}
+async function cloudCheck(c){
+  const r = await fetch(`${GITHUB_API}/user`, {headers:cloudHeaders(c)});
+  if(!r.ok){
+    if(r.status===401) throw new Error("令牌无效或已过期");
+    if(r.status===403) throw new Error("没有权限，检查令牌的仓库授权");
+    throw new Error("连接失败 HTTP "+r.status);
+  }
+  const me = await r.json();
+  const rr = await fetch(`${GITHUB_API}/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}`, {headers:cloudHeaders(c)});
+  if(!rr.ok) throw new Error(rr.status===404 ? "找不到仓库，检查用户名和仓库名（私有仓库需令牌授权）" : "读仓库失败 HTTP "+rr.status);
+  return me.login || "";
+}
+async function cloudRead(c){
+  const p = encodeURIComponent(c.path||"配件清单.json");
+  const r = await fetch(`${GITHUB_API}/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}/contents/${p}`, {headers:cloudHeaders(c)});
+  if(r.status===404) return {data:null, sha:null};
+  if(!r.ok) throw new Error("读数据失败 HTTP "+r.status);
+  const j = await r.json();
+  let data = null;
+  try{ data = JSON.parse(b64ToUtf8(j.content)); }catch(e){ throw new Error("云端数据格式不对"); }
+  return {data, sha:j.sha};
+}
+async function cloudWrite(c, data, sha){
+  const p = encodeURIComponent(c.path||"配件清单.json");
+  const body = {message:"装机比价 更新 "+new Date().toISOString().slice(0,16).replace("T"," "),
+                content:utf8ToB64(JSON.stringify(data, null, 2))};
+  if(sha) body.sha = sha;   // 有 sha 是更新，没有是新建
+  const r = await fetch(`${GITHUB_API}/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}/contents/${p}`, {
+    method:"PUT", headers:Object.assign({"Content-Type":"application/json"}, cloudHeaders(c)),
+    body:JSON.stringify(body)
+  });
+  if(!r.ok){
+    let msg = "写入失败 HTTP "+r.status;
+    try{ const j = await r.json(); if(j && j.message) msg = j.message; }catch(e){}
+    throw new Error(msg);
+  }
+}
+function cloudPayload(){
+  return {
+    rev:S.rev, updatedAt:S.updatedAt, lastImport:S.lastImport||"",
+    deleted:S.deleted||[], stars:S.stars||[], excludedCats:S.excludedCats||[],
+    products:S.products, history:S.history, trash:S.trash||[], restored:S.restored||[],
+    pickAllCats:SEED.pickAllCats||[], exclusiveGroups:SEED.exclusiveGroups||[]
+  };
+}
+/* 云端拉取：把远端数据整包换进来。本地没保存的改动先让位给云端，
+   避免一台设备还在改、另一台已覆盖造成版本错乱。 */
+async function cloudPull(verbose){
+  const c = cloudCfg();
+  if(!c) throw new Error("还没配置云端");
+  const {data, sha} = await cloudRead(c);
+  if(!data || !Array.isArray(data.products)){
+    if(verbose) toast("云端还没有数据，先点「上传到云端」建一份");
+    return false;
+  }
+  S = normalize(data);
+  S.trash = Array.isArray(S.trash) ? S.trash : [];
+  S.restored = Array.isArray(S.restored) ? S.restored : [];
+  dirty = false;
+  cloudSHA = sha;
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+  render();
+  if(verbose) toast("已从云端载入最新数据");
+  return true;
+}
+let cloudSHA = null;   // 上次读到的文件 sha，写入时要用，避免覆盖别人刚存的
+
+/* ---------- 写回：云端优先，否则写本地源文件 ---------- */
+async function syncNow(verbose){
+  if(cloudOn()) return cloudPush(verbose);
+  const btn = document.getElementById("btnSync");
+  if(!btn) return;
+  clearTimeout(syncTimer);
+  btn.classList.add("busy");
+  btn.classList.remove("offline","saved");
+  btn.textContent = "保存中…";
+  try{
+    const res = await fetch(SYNC_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        products:S.products, history:S.history, stars:S.stars||[],
+        excludedCats:S.excludedCats||[],
+        updatedAt:S.updatedAt, lastImport:S.lastImport||"", deleted:S.deleted||[],
+        restored:S.restored||[]
+      })
+    });
+    const out = await res.json();
+    if(!res.ok || !out.ok) throw new Error(out.error || ("HTTP " + res.status));
+    dirty = false;   // 已落盘，本地不再有未保存的改动
+    // 已落盘，本地字段锁可以清掉，下次文件更新会正常采纳新值
+    S.products.forEach(p=> p.userEdit = []);
+    if(out.rev) S.rev = out.rev;
+    // 墓碑已在服务端撤掉，恢复标记用完即清
+    if((S.restored||[]).length) S.restored = [];
+    try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+    btn.classList.remove("busy");
+    btn.classList.add("saved");
+    btn.textContent = "已保存到源文件";
+    setTimeout(()=>{ btn.classList.remove("saved"); btn.textContent = "保存到源文件"; }, 2600);
+    if(verbose) toast("已写入 配件清单.json，并重建了 HTML");
+  }catch(e){
+    btn.classList.remove("busy");
+    btn.classList.add("offline");
+    btn.textContent = "未连接，点此重试";
+    if(verbose) toast("保存失败：" + e.message + "。数据已暂存在浏览器，不会丢，稍后点这个按钮重试即可");
+  }
+}
+/* 云端保存：整包写进私有仓库，手机在外面改动直接落云，不等电脑开机。 */
+async function cloudPush(verbose){
+  const btn = document.getElementById("btnSync");
+  if(!btn) return;
+  clearTimeout(syncTimer);
+  btn.classList.add("busy");
+  btn.classList.remove("offline","saved");
+  btn.textContent = "保存中…";
+  try{
+    const c = cloudCfg();
+    if(!c) throw new Error("还没配置云端");
+    // sha 缺失或过期都重新读一次：409 冲突时能自动重试一次
+    if(!cloudSHA){
+      const cur = await cloudRead(c);
+      cloudSHA = cur.sha;
+      // 云端比本地新，先按云端为准，避免把旧数据盖回去
+      if(cur.data && cur.data.rev > S.rev){
+        S = normalize(cur.data); render();
+      }
+    }
+    const payload = cloudPayload();
+    try{
+      await cloudWrite(c, payload, cloudSHA);
+    }catch(e){
+      if(/sha|conflict|409|updated since/i.test(e.message)){
+        const cur = await cloudRead(c);
+        cloudSHA = cur.sha;
+        await cloudWrite(c, payload, cloudSHA);
+      }else throw e;
+    }
+    // 写入成功后重新读一次拿新 sha，供下次保存使用
+    try{ cloudSHA = (await cloudRead(c)).sha; }catch(e){ cloudSHA = null; }
+    dirty = false;
+    S.products.forEach(p=> p.userEdit = []);
+    if((S.restored||[]).length) S.restored = [];
+    try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+    btn.classList.remove("busy");
+    btn.classList.add("saved");
+    btn.textContent = "已保存到云端";
+    setTimeout(()=>{ btn.classList.remove("saved"); btn.textContent = saveLabel(); }, 2600);
+    if(verbose) toast("已写进你的 GitHub 私有仓库");
+  }catch(e){
+    btn.classList.remove("busy");
+    btn.classList.add("offline");
+    btn.textContent = "云保存失败，点此重试";
+    if(verbose) toast("云端保存失败：" + e.message + "。数据仍在浏览器，不会丢");
+  }
+}
+function saveLabel(){ return cloudOn() ? "保存到云端" : "保存到源文件"; }
+function scheduleSync(){
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(()=> syncNow(false), 700);
+}
+
+function toast(msg){
+  let el = document.getElementById("toast");
+  if(!el){ el = document.createElement("div"); el.id = "toast"; el.className = "toast"; document.body.appendChild(el); }
+  el.textContent = msg;
+  requestAnimationFrame(()=> el.classList.add("on"));
+  clearTimeout(el._t);
+  el._t = setTimeout(()=> el.classList.remove("on"), 4200);
+}
+/* stars：网页点亮「最优选」的商品 id 数组，每个类目最多一颗。
+   顺手清掉指向已删除 / 不存在商品的残留，并排除「全部都要买」这类不参与点星的类目。
+   「不计入整机」的类目保留星标：勾选可能只是临时关掉，勾回来时星还在。*/
+function pruneStars(s){
+  const byId = new Map(s.products.map(p=>[p.id,p]));
+  const seen = new Set();
+  s.stars = (Array.isArray(s.stars) ? s.stars : []).filter(id=>{
+    const p = byId.get(id);
+    if(!p || isPickAll(p.cat) || seen.has(p.cat)) return false;
+    seen.add(p.cat); return true;
+  });
+  return s;
+}
+function normalize(s){
+  s.history = s.history || {};
+  s.builtAt = s.builtAt || "";
+  s.rev = Number(s.rev) || 0;
+  s.deleted = Array.isArray(s.deleted) ? s.deleted : [];
+  // 老缓存没有 stars 字段时采纳文件里已点好的星，换浏览器 / 清缓存都不丢
+  if(!Array.isArray(s.stars))
+    s.stars = (typeof SEED!=="undefined" && Array.isArray(SEED.stars)) ? SEED.stars.slice() : [];
+  // 同理，老缓存没有 excludedCats 时采纳文件里的计入状态，
+  // 否则「不计入」的类目会在换浏览器后突然又算进一套成机
+  if(!Array.isArray(s.excludedCats))
+    s.excludedCats = (typeof SEED!=="undefined" && Array.isArray(SEED.excludedCats)) ? SEED.excludedCats.slice() : [];
+  // 上次「导入价格」的日期：顶部「该导入了」提醒只看它，改商品信息不会把它重置
+  if(!s.lastImport)
+    s.lastImport = (typeof SEED!=="undefined" && SEED.lastImport) ? SEED.lastImport : "";
+  s.products = (s.products||[]).map(p=>({
+    id:p.id, cat:p.cat||"未分类", brand:p.brand||"", model:p.model||"",
+    qty: Number(p.qty)||1, price: Number(p.price)||0,
+    low: (p.low===null||p.low===undefined||p.low==="")? null : Number(p.low),
+    avg: (p.avg===null||p.avg===undefined||p.avg==="")? null : Number(p.avg),
+    jd: (p.jd===null||p.jd===undefined||p.jd==="")? null : Number(p.jd),
+    jdNote:p.jdNote||"",
+    jdParts: Array.isArray(p.jdParts) ? p.jdParts.map(q=>({
+      name:q.name||"", jd:(q.jd===null||q.jd===undefined||q.jd==="")?null:Number(q.jd),
+      src:q.src||"", at:q.at||"", qty:Number(q.qty)||1
+    })) : [],
+    jdMode: p.jdMode==="manual" ? "manual" : "sum",
+    userEdit: Array.isArray(p.userEdit) ? p.userEdit : [],
+    nick:p.nick||"",
+    note:p.note||"", bought: !!p.bought,
+    // 别家店报价：同一件商品在淘宝 / 天猫另一家店的价，参考用，不进结算
+    quotes: Array.isArray(p.quotes) ? p.quotes.map(q=>({
+      shop:q.shop||"",
+      price:(q.price===null||q.price===undefined||q.price==="")?null:Number(q.price),
+      at:q.at||"", note:q.note||""
+    })).filter(q=> q.shop && q.price>0) : [],
+    conf:p.conf||"", hnote:p.hnote||""
+  }));
+  return pruneStars(s);
+}
+let S = load();
+S.trash = Array.isArray(S.trash) ? S.trash : [];
+S.restored = Array.isArray(S.restored) ? S.restored : [];
+// 上次刷新前有「恢复」还没来得及落盘，补存一次，避免文件和页面不一致
+if(S.restored.length) scheduleSync();
+
+/* 筛选状态只影响显示：不写进源文件，也不参与顶部任何汇总计算；刷新自动回到「全部」 */
+const FILTER = { cats:new Set(), q:"" };
+
+function save(){
+  dirty = true;
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ console.warn(e); }
+  scheduleSync();
+}
+function storageOK(){
+  try{ localStorage.setItem("__probe__","1"); localStorage.removeItem("__probe__"); return true; }
+  catch(e){ return false; }
+}
+
+/* ---------- utils ---------- */
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function money(n){
+  if(n===null||n===undefined||isNaN(n)) return "—";
+  const v = Number(n);
+  return "¥" + v.toLocaleString("zh-CN",{minimumFractionDigits: Number.isInteger(v)?0:2, maximumFractionDigits:2});
+}
+function shortMoney(n){
+  const v = Number(n);
+  if(v>=10000) return "¥" + (v/10000).toFixed(2).replace(/\.?0+$/,"") + "万";
+  return "¥" + v.toLocaleString("zh-CN",{maximumFractionDigits:0});
+}
+function pct(x){
+  const v = x*100;
+  if(Math.abs(v) < 1) return "";                      // 不到 1% 就不显示，免得出现「+0%」
+  return (v>=0?"+":"") + (Math.abs(v)<10 ? v.toFixed(1) : v.toFixed(0)) + "%";
+}
+function highLabel(d){ const s = pct(d); return s ? "偏高 " + s : "偏高"; }
+function subtotal(p){ return p.price * p.qty; }
+function bestPrice(p){
+  return (p.jd!=null && p.jd>0) ? Math.min(p.price, p.jd) : p.price;
+}
+function bestSrc(p){ return (p.jd!=null && p.jd>0 && p.jd < p.price) ? "京东" : "淘宝"; }
+function bestSubtotal(p){ return bestPrice(p) * p.qty; }
+function catIndex(c){ const i = CAT_ORDER.indexOf(c); return i<0 ? 99 : i; }
+/* 类目里点过星的「最优选」。「全部都要买」的类目不参与点星 */
+function starOf(cat, items){
+  if(isPickAll(cat)) return null;
+  const ids = Array.isArray(S.stars) ? S.stars : [];
+  return items.find(p=>ids.includes(p.id)) || null;
+}
+/* 组内顺序：星标永远第一行，其余按到手价（淘宝 / 京东取更低 × 数量）由低到高。
+   类目之间的顺序仍由 CAT_ORDER 固定，价格变化不会让页面跳来跳去。*/
+function sortItems(cat, items){
+  const sid = (starOf(cat, items)||{}).id || null;
+  return items.slice().sort((a,b)=>{
+    if(sid){
+      if(a.id===sid) return -1;
+      if(b.id===sid) return 1;
+    }
+    return (bestSubtotal(a)-bestSubtotal(b)) || String(a.id).localeCompare(String(b.id));
+  });
+}
+
+function stateOf(p){
+  const cur = bestPrice(p);
+  const tag = (bestSrc(p)==="京东" ? "（按京东 " + money(p.jd) + " 算）" : "");
+  if(p.low==null && p.avg==null) return {k:"na", label:"待核", tip:"还没查到可靠的历史价"};
+  if(p.low!=null && cur <= p.low*1.005)
+    return {k:"low", label:"史低", tip:"已到近 6 个月官方最低价 " + money(p.low) + tag};
+  if(p.avg!=null && cur <= p.avg)
+    return {k:"ok", label:"可入", tip:"低于 6 个月均价 " + money(p.avg) + "，" + pct(cur/p.avg-1) + tag};
+  if(p.avg!=null)
+    return {k:"high", label:highLabel(cur/p.avg-1), tip:"高于 6 个月均价 " + money(p.avg) + "，建议再等" + tag};
+  return {k:"high", label:highLabel(cur/p.low-1), tip:"高于 6 个月最低价 " + money(p.low) + tag};
+}
+
+function cmpCell(p){
+  if(p.jd==null || !(p.jd>0)) return '<span class="dim2">—</span>';
+  const d = p.jd - p.price;
+  if(Math.abs(d) < 0.005) return '<span class="dim2">同价</span>';
+  if(d < 0) return `<span class="cmp jd">京东 −${money(-d)}</span>`;
+  return `<span class="cmp tb">淘宝 −${money(d)}</span>`;
+}
+
+/* 别家店报价：同一件商品在天猫 / 淘宝另一家店的价（如「AMD旗舰店」）。
+   只做横向对比，不参与排序、差价和一套成机的结算——结算永远按「淘宝价 / 京东价」。
+   想改用别家店，点编辑把那个数字填成淘宝价即可。*/
+function quotesOf(p){ return Array.isArray(p.quotes) ? p.quotes : []; }
+function quoteLines(p){
+  const qs = quotesOf(p);
+  if(!qs.length) return "";
+  return qs.map(q=>{
+    // 比当前采纳价更低的，用重一点的色标出来
+    const cls = q.price < p.price ? "qline best" : "qline";
+    const tip = q.shop + " " + money(q.price) + (q.at ? " · " + q.at : "") + (q.note ? " · " + q.note : "");
+    return `<div class="${cls}" title="${esc(tip)}"><span>${esc(q.shop)}</span> <b>${shortMoney(q.price)}</b></div>`;
+  }).join("");
+}
+function priceCellTitle(p){
+  const lines = ["当前采纳价 " + money(p.price) + (p.note ? "（" + p.note + "）" : "")];
+  quotesOf(p).forEach(q=>{
+    lines.push(q.shop + " " + money(q.price) + (q.at ? " · " + q.at : "") + (q.note ? " · " + q.note : ""));
+  });
+  if(quotesOf(p).length) lines.push("别家店报价只作对比，不参与结算；想改用别家店，把那个数填成淘宝价即可");
+  return lines.join("\n");
+}
+
+/* 拆件套餐：京东不卖板 U 套装，京东价 = CPU + 主板两个单品之和。
+   拆件明细由 配件清单.json 的 jdParts 定义，页面只读展示并允许手改单价。*/
+function hasParts(p){ return Array.isArray(p.jdParts) && p.jdParts.length>0; }
+function partSum(p){
+  if(!hasParts(p)) return null;
+  let s = 0;
+  for(const q of p.jdParts){
+    if(q.jd==null || !(q.jd>0)) return null;   // 有一个没价就当还没查全
+    s += q.jd * (Number(q.qty)||1);
+  }
+  return Math.round(s*100)/100;
+}
+function jdCellTitle(p){
+  if(!hasParts(p)){
+    return p.jd==null ? "点这里填京东价" : (p.jdNote || ("京东 " + money(p.jd)));
+  }
+  const lines = p.jdParts.map((q,i)=> `${i+1}. ${q.name}  ${q.jd==null?"未查到":money(q.jd)}`);
+  const sum = partSum(p);
+  return `京东不卖这个套装，按两个单品分开买：\n`
+       + lines.join("\n")
+       + `\n────────\n两件合计 ${sum==null?"待补":money(sum)}`
+       + (p.jdMode==="manual" ? `\n当前显示 ${money(p.jd)}（你手动填的值）` : "")
+       + (p.jdNote ? `\n\n${p.jdNote}` : "")
+       + `\n\n点这一格可修改拆件单价`;
+}
+
+/* ---------- sparkline ---------- */
+function histOf(id){
+  const h = S.history[id] || [];
+  return h.slice().sort((a,b)=> a.d < b.d ? -1 : 1);
+}
+function sparkSVG(id){
+  const h = histOf(id);
+  if(h.length < 2) return '<span style="color:#C6BFB5;font-size:12px">—</span>';
+  const w=64, ht=22, pad=3;
+  const vals = h.map(x=>x.p);
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if(hi===lo){ hi = lo + 1; lo = lo - 1; }
+  const x = i => pad + i*(w-2*pad)/(h.length-1);
+  const y = v => ht-pad - (v-lo)*(ht-2*pad)/(hi-lo);
+  const pts = h.map((pt,i)=> x(i).toFixed(1)+","+y(pt.p).toFixed(1)).join(" ");
+  const last = h[h.length-1];
+  return `<svg width="${w}" height="${ht}" viewBox="0 0 ${w} ${ht}" aria-hidden="true">
+    <polyline points="${pts}" fill="none" stroke="#9DAE9C" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${x(h.length-1).toFixed(1)}" cy="${y(last.p).toFixed(1)}" r="2.1" fill="#7F947F"/></svg>`;
+}
+
+/* ---------- render ---------- */
+function render(){
+  const byCat = new Map();
+  S.products.forEach(p=>{ if(!byCat.has(p.cat)) byCat.set(p.cat,[]); byCat.get(p.cat).push(p); });
+  const cats = [...byCat.keys()].sort((a,b)=>{
+    const ia=catIndex(a), ib=catIndex(b);
+    return ia!==ib ? ia-ib : a.localeCompare(b,"zh");
+  });
+
+  let html = "", shown = 0;
+  cats.forEach(cat=>{
+    const items = sortItems(cat, byCat.get(cat));
+    const viewItems = items.filter(visible);
+    if(!viewItems.length) return;          // 整组被筛掉就不渲染这一组
+    shown += viewItems.length;
+    const cheapest = items.reduce((m,p)=> (bestPrice(p)<bestPrice(m)?p:m), items[0]);
+    const star = starOf(cat, items);
+    const color = CAT_COLOR[cat] || "#B0A69B";
+    const boughtAll = items.every(p=>p.bought);
+    const allOf = isPickAll(cat);
+    const off = isExcluded(cat);
+    const grp = (SEED.exclusiveGroups||[]).find(g=> (g.cats||[]).includes(cat));
+    const ruleNote = PICK_ALL.get(cat) || (grp && grp.note) || "";
+    const cntText = allOf
+      ? `${items.length} 件都要买${boughtAll?" · 已买":""}`
+      : `${items.length} 个候选${boughtAll?" · 已买":""}`;
+    // 不计入的组：右侧不再说「当前最低」，改成「若买要多少钱」，免得看成已经在算
+    const offSum = allOf ? items.reduce((s,p)=> s+bestSubtotal(p),0)
+                         : bestSubtotal(star || cheapest);
+    const sumText = off
+      ? `不计入 · 若买 ${money(offSum)}`
+      : allOf
+        ? `合计 ${money(items.reduce((s,p)=> s+bestSubtotal(p),0))} · 全部计入`
+        : star
+          ? `最优选 ${money(bestSubtotal(star))} · 结算按它`
+          : `当前最低 ${money(bestPrice(cheapest))}${(cheapest.jd!=null && cheapest.jd<cheapest.price)?" · 京东":""}`;
+
+    html += `<section class="group${off?" off":""}" data-cat="${esc(cat)}">
+      <div class="ghd">
+        <span class="cdot" style="background:${color}"></span>
+        <h2>${esc(cat)}</h2>
+        <span class="cnt"${ruleNote?` title="${esc(ruleNote)}"`:""}>${cntText}</span>
+        <label class="inc${off?" off":""}" title="${off?"这个类目现在不计入一套成机，点一下恢复计入":"把这个类目从一套成机里排除，表格里照常比价、照常记录"}">
+          <input type="checkbox" data-include="${esc(cat)}"${off?"":" checked"}>计入整机
+        </label>
+        <span class="sp"></span>
+        <span class="lo">${sumText}</span>
+      </div>
+      <div class="tbl">
+        <div class="row head">
+          <div class="c-star" style="font-size:10px;letter-spacing:0" title="点星星把这个类目的最优选置顶，结算也按它算">${allOf?"":"优选"}</div>
+          <div class="c-check">已购</div><div>商品</div><div style="text-align:center">数量</div>
+          <div class="num">淘宝价</div><div class="num">京东价</div><div class="num">差价</div>
+          <div class="num">6 个月最低</div><div class="num">6 个月均价</div>
+          <div style="text-align:center">状态</div><div style="text-align:center">走势</div><div></div>
+        </div>`;
+
+    viewItems.forEach(p=>{
+      const st = stateOf(p);
+      const starOn = !allOf && !!star && star.id===p.id;
+      const cls = ["row","body"];
+      if(st.k==="low") cls.push("is-low");
+      if(p.bought) cls.push("bought");
+      html += `<div class="${cls.join(" ")}" data-id="${esc(p.id)}">
+        <div class="c-star">${allOf?"":`<button class="star${starOn?" on":""}" data-star="${esc(p.id)}" title="${starOn?"取消最优选，恢复按最低价结算":"设为这个类目的最优选，置顶且结算按它算"}" aria-pressed="${starOn}">${starOn?"★":"☆"}</button>`}</div>
+        <div class="c-check"><label class="cb" title="标记已购入">
+          <input type="checkbox" data-check="${esc(p.id)}" ${p.bought?"checked":""}></label></div>
+        <div class="c-name">
+          <div class="bd">${esc(p.brand)}${p.nick?`<span class="nick" data-nick="${esc(p.id)}" title="点这里改昵称">${esc(p.nick)}</span>`:`<span class="nick-add" data-nick="${esc(p.id)}" title="给这件加个昵称">＋ 昵称</span>`}${allOf?`<span class="must" title="${esc(ruleNote||"和同组其它型号一起买，不是二选一")}">都要买</span>`:""}</div>
+          <div class="nm">${esc(p.model)}</div>
+          ${p.note?`<div class="nt">${esc(p.note)}</div>`:""}
+        </div>
+        <div class="c-qty">×${p.qty}</div>
+        <div class="num cur ${p.bought?"bought-mark":""}" title="${esc(priceCellTitle(p)).replace(/\n/g,'&#10;')}">${money(p.price)}${quoteLines(p)}</div>
+        <div class="num jd ${p.jd==null?"fillable":""}" data-jd="${esc(p.id)}" title="${esc(jdCellTitle(p)).replace(/\n/g,'&#10;')}">${p.jd==null?"—":money(p.jd)}${hasParts(p)?`<span class="jd-split" title="京东按 ${p.jdParts.length} 件单品加总">${p.jdParts.length} 件合计</span>`:""}</div>
+        <div class="num">${cmpCell(p)}</div>
+        <div class="num low ${p.low==null?"dim":""}" ${p.hnote?`title="${esc(p.hnote)}"`:""}>${p.low==null?"—":(p.conf==="低"?"≈":"")+money(p.low)}</div>
+        <div class="num avg ${p.avg==null?"dim":""}" ${p.hnote?`title="${esc(p.hnote)}"`:""}>${p.avg==null?"—":(p.conf==="低"?"≈":"")+money(p.avg)}</div>
+        <div style="text-align:center"><span class="chip ${st.k}" title="${esc(st.tip + (p.hnote ? " · " + p.hnote : ""))}">${st.label}</span></div>
+        <div class="c-spark"><button class="sp" data-chart="${esc(p.id)}" title="价格走势">${sparkSVG(p.id)}</button></div>
+        <div class="c-act">
+          <button class="ico" data-edit="${esc(p.id)}" title="编辑">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11.3 2.3l2.4 2.4L5 13.4l-3.2.8.8-3.2 8.7-8.7z"/></svg>
+          </button>
+          <button class="ico del" data-del="${esc(p.id)}" title="删除这件（可在「已删除」里恢复）">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.8 4.3h10.4M6.2 4.3V2.8h3.6v1.5M4.2 4.3l.6 8.3a1 1 0 0 0 1 .9h4.4a1 1 0 0 0 1-.9l.6-8.3M6.6 6.8v4M9.4 6.8v4"/></svg>
+          </button>
+        </div>
+      </div>`;
+    });
+    html += `</div></section>`;
+  });
+
+  if(!html){
+    if(S.products.length === 0){
+      html = `<div class="empty" style="padding:44px 22px">
+        <div style="font-size:15px;font-weight:600;color:var(--ink-2);margin-bottom:8px">还没有数据</div>
+        <div style="font-size:12.5px;line-height:1.8;color:var(--ink-3);max-width:360px;margin:0 auto">
+        这是第一次打开。点右上角「说明」，拉到 <b>7. 云端同步</b>，<br>
+        填上你的 GitHub 用户名、私有仓库名和令牌，<br>
+        再点「从云端拉取」，商品清单就都过来了。</div></div>`;
+    }else{
+      html = `<div class="empty">没有符合筛选的商品。<br>
+        <span style="font-size:11.5px;color:var(--ink-3)">点上面的「全部」或「清除」就能看回所有商品。</span></div>`;
+    }
+  }
+  document.getElementById("list").innerHTML = html;
+  renderFilterBar(shown, S.products.length);
+  renderTrash();
+  renderSummary();
+  renderMeta();
+  const dl = document.getElementById("cats");
+  dl.innerHTML = [...new Set(S.products.map(p=>p.cat))].map(c=>`<option value="${esc(c)}">`).join("");
+}
+
+/* ---------- 筛选：只影响显示 ---------- */
+function visible(p){
+  if(FILTER.cats.size && !FILTER.cats.has(p.cat)) return false;
+  const q = FILTER.q.trim().toLowerCase();
+  if(!q) return true;
+  return [p.cat,p.brand,p.model,p.nick,p.note].join(" ").toLowerCase().includes(q);
+}
+function renderFilterBar(shown, total){
+  const counts = new Map();
+  S.products.forEach(p=> counts.set(p.cat, (counts.get(p.cat)||0)+1));
+  const cats = [...counts.keys()].sort((a,b)=>
+    catIndex(a)-catIndex(b) || a.localeCompare(b,"zh"));
+  const active = FILTER.cats.size>0 || FILTER.q.trim().length>0;
+  let chips = `<button class="fb-chip${active?"":" on"}" data-fb="__all__">全部 <b>${total}</b></button>`;
+  cats.forEach(c=>{
+    chips += `<button class="fb-chip${FILTER.cats.has(c)?" on":""}" data-fb="${esc(c)}">${esc(c)} <b>${counts.get(c)}</b></button>`;
+  });
+  const box = document.getElementById("fbChips");
+  if(box) box.innerHTML = chips;
+  const cnt = document.getElementById("fbCount");
+  if(cnt) cnt.textContent = active ? `显示 ${shown} / 共 ${total} 件` : `共 ${total} 件`;
+}
+
+/* ---------- 删除 / 回收站 ---------- */
+function toggleTrash(force){
+  const panel = document.getElementById("trashPanel");
+  if(!panel) return;
+  const on = force!==undefined ? force : !panel.classList.contains("on");
+  panel.classList.toggle("on", on);
+}
+function renderTrash(){
+  const list = S.trash||[];
+  const badge = document.getElementById("trashN");
+  if(badge) badge.textContent = list.length;
+  const btn = document.getElementById("btnTrash");
+  if(btn) btn.style.display = list.length ? "" : "none";
+  const box = document.getElementById("trashPanel");
+  if(!box) return;
+  box.innerHTML = list.length
+    ? `<div class="trash-empty">这些商品已移出清单，点「恢复」放回去（含当时的价格历史）。这份记录只留在本浏览器。</div>` +
+      list.map(x=>`<div class="trash-row">
+        <span class="nm" title="${esc(x.p.brand+" "+x.p.model)}">${esc(x.p.brand)} ${esc(x.p.model)}</span>
+        <span style="font-size:11px;color:var(--ink-3);white-space:nowrap">${esc(x.p.cat)} · ${esc(x.at||"")}</span>
+        <button class="btn sm" data-restore="${esc(x.p.id)}">恢复</button></div>`).join("")
+    : `<div class="trash-empty">还没有删过商品。</div>`;
+}
+/* 点星：每个类目只能有一颗，点第二颗自动让位；再点一次取消。
+   排序和结算都由 render() 实时算，取消后顺序与金额立刻复原。*/
+function toggleStar(id){
+  const p = S.products.find(x=>x.id===id);
+  if(!p || isPickAll(p.cat)) return;
+  const was = (S.stars||[]).includes(id);
+  const keep = (S.stars||[]).filter(sid=>{
+    if(sid===id) return false;
+    const q = S.products.find(x=>x.id===sid);
+    return q && q.cat !== p.cat;
+  });
+  if(!was) keep.push(id);
+  S.stars = keep;
+  save(); render();
+  toast(was
+    ? "已取消「" + p.brand + " " + p.model + "」的最优选，恢复按最低价结算"
+    : "已设为 " + p.cat + " 的最优选：「" + p.brand + " " + p.model + "」，置顶并计入成机");
+}
+
+/* 类目头上的「计入整机」勾选。取消勾选 = 这个类目不参与一套成机的金额和明细，
+   表格里照常比价、照常看走势、照常勾已购。
+   互斥组（比如两个机箱类目）勾一个会自动把同组另一个改成不计入，
+   否则一套机器会同时算出两台机箱的钱。*/
+function toggleInclude(cat){
+  if(!S.products.some(p=>p.cat===cat)) return;
+  const set = new Set(S.excludedCats||[]);
+  const wasExcluded = set.has(cat);        // 现在被排除，点一下就是要恢复计入
+  if(wasExcluded) set.delete(cat); else set.add(cat);
+  const sib = siblingsOf(cat);
+  if(wasExcluded) sib.forEach(c=> set.add(c));
+  S.excludedCats = [...set].filter(c=> S.products.some(p=>p.cat===c));
+  save(); render();
+  if(wasExcluded && sib.length)
+    toast(`「${cat}」已计入整机，同组的「${sib.join("、")}」自动改为不计入`);
+  else
+    toast(wasExcluded ? `「${cat}」已计入整机` : `「${cat}」不计入一套成机，只留在表格里比价`);
+}
+function deleteProduct(id){
+  const p = S.products.find(x=>x.id===id);
+  if(!p) return false;
+  if(!confirm("删掉「"+p.brand+" "+p.model+"」？\n价格历史也会一起移走；删错了可以在「已删除」里恢复。")) return false;
+  S.trash = S.trash||[];
+  S.trash.unshift({p:JSON.parse(JSON.stringify(p)), hist:(S.history[id]||[]).slice(),
+                   at:TODAY, star:(S.stars||[]).includes(id)});
+  S.products = S.products.filter(x=>x.id!==id);
+  S.stars = (S.stars||[]).filter(x=>x!==id);
+  S.deleted = [...new Set([...(S.deleted||[]), id])];
+  S.restored = (S.restored||[]).filter(x=>x!==id);
+  delete S.history[id];
+  save(); render(); toggleTrash(true);
+  toast("已删除 "+p.brand+" "+p.model+" · 可在「已删除」里恢复");
+  return true;
+}
+function restoreProduct(id){
+  const i = (S.trash||[]).findIndex(x=>x.p && x.p.id===id);
+  if(i<0) return;
+  const entry = S.trash[i];
+  S.trash.splice(i,1);
+  if(!S.products.some(x=>x.id===id)) S.products.push(entry.p);
+  S.deleted = (S.deleted||[]).filter(x=>x!==id);
+  S.restored = [...new Set([...(S.restored||[]), id])];
+  if(entry.hist && entry.hist.length) S.history[id] = entry.hist;
+  // 删之前点过星的商品，恢复时把星也还回来（同类目若已有星就不抢）
+  if(entry.star){
+    const occupied = (S.stars||[]).some(sid=>{
+      const q = S.products.find(x=>x.id===sid);
+      return q && q.cat===entry.p.cat;
+    });
+    if(!occupied) S.stars = [...(S.stars||[]), id];
+  }
+  save(); render();
+  toast("已恢复 "+entry.p.brand+" "+entry.p.model);
+}
+
+function groupedCats(){
+  const m = new Map();
+  S.products.forEach(p=>{ if(!m.has(p.cat)) m.set(p.cat,[]); m.get(p.cat).push(p); });
+  return [...m.keys()].sort((a,b)=>{
+    const ia=catIndex(a), ib=catIndex(b);
+    return ia!==ib ? ia-ib : a.localeCompare(b,"zh");
+  }).map(cat=>({cat, items:sortItems(cat, m.get(cat))}));
+}
+
+function buildPicks(){
+  // 普通类目：点过星就取星标那件（哪怕同类里有更便宜的），没点星取更便宜的一件；
+  // pickAllCats 里的类目：每一件都是不同部件，全部计入这套机器，也不参与点星；
+  // 组头取消勾选「计入整机」的类目：只留在表格里比价，完全不进这套机器的结算。
+  return groupedCats().flatMap(({cat,items})=>{
+    if(isExcluded(cat)) return [];
+    if(isPickAll(cat))
+      return items.map(p=>({cat, p, n:items.length, allOf:true}));
+    const star = starOf(cat, items);
+    const win = star || items.reduce((m,p)=> bestSubtotal(p) < bestSubtotal(m) ? p : m, items[0]);
+    return [{cat, p:win, n:items.length, starred:!!star}];
+  });
+}
+
+function renderSummary(){
+  const all = S.products.reduce((s,p)=> s + bestSubtotal(p), 0);
+  const bought = S.products.filter(p=>p.bought);
+  const boughtSum = bought.reduce((s,p)=> s + bestSubtotal(p), 0);
+
+  const picks = buildPicks();
+  let build = 0;
+  picks.forEach(x=>{ build += bestSubtotal(x.p); });
+
+  const save = S.products.filter(p=>!p.bought && p.low!=null)
+    .reduce((s,p)=> s + Math.max(0, (bestPrice(p) - p.low) * p.qty), 0);
+
+  document.getElementById("cBuild").textContent = money(Math.round(build*100)/100);
+  const buildDesc = document.getElementById("cBuildD");
+  if(buildDesc){
+    const starN = picks.filter(x=>x.starred).length;
+    const head = starN ? starN + " 类按点星的最优选 · 其余取最低" : "每类取当前最低的一件";
+    const offCats = (S.excludedCats||[]).filter(c=> S.products.some(p=>p.cat===c));
+    buildDesc.textContent = head
+      + (PICK_ALL.size ? " · " + pickAllText() + "全要" : "")
+      + (offCats.length ? " · " + offCats.join("、") + "不计入" : "");
+  }
+  document.getElementById("cAll").textContent = money(Math.round(all*100)/100);
+  document.getElementById("cBought").textContent = money(Math.round(boughtSum*100)/100);
+  document.getElementById("cBoughtN").textContent = bought.length + " 件 / 共 " + S.products.length + " 件";
+  document.getElementById("cSave").textContent = money(Math.round(save*100)/100);
+  renderBuildDetail(picks, build);
+}
+
+function renderBuildDetail(picks, build){
+  const color = c => CAT_COLOR[c] || "#B0A69B";
+  const rows = picks.map(({cat,p,n,allOf,starred})=>{
+    const src = bestSrc(p);
+    const note = PICK_ALL.get(cat) || "";
+    const tag = allOf ? `<em title="${esc(note||"两种不同部件，都要买")}">${n} 件全要</em>`
+             : starred ? `<em class="star-tag" title="这个类目点过星，结算按这件算，哪怕有更便宜的">★ 已点星</em>`
+             : (n>1 ? `<em>${n} 选 1</em>` : `<em>唯一</em>`);
+    return `<div class="bd-row${p.bought?" got":""}">
+      <span class="bd-cat"><i style="background:${color(cat)}"></i>${esc(cat)}${tag}</span>
+      <span class="bd-name" title="${esc(p.brand + " " + p.model)}">${esc(p.brand)} ${esc(p.model)}${p.nick?`<span class="n">${esc(p.nick)}</span>`:""}${p.bought?`<span class="got-tag">已购</span>`:""}</span>
+      <span class="bd-src ${src==="京东"?"jd":"tb"}">${src}</span>
+      <span class="bd-qty">${p.qty>1?"×"+p.qty:""}</span>
+      <span class="bd-price">${money(bestSubtotal(p))}</span>
+    </div>`;
+  }).join("");
+  const el = document.getElementById("bdList");
+  if(el) el.innerHTML = rows;
+  const cnt = document.getElementById("bdCount");
+  if(cnt) cnt.textContent = picks.length;
+  const allNote = document.getElementById("bdAllNote");
+  if(allNote) allNote.textContent = PICK_ALL.size ? "，" + pickAllText() + "全部都要" : "";
+  const offCats = (S.excludedCats||[]).filter(c=> S.products.some(p=>p.cat===c));
+  const sub = document.getElementById("bdSub");
+  if(sub) sub.textContent = "价格取淘宝 / 京东里更低的那个平台"
+    + (offCats.length ? " · " + offCats.join("、") + "不计入" : "");
+  /* 未计入的类目没进结算，这里写明「漏掉」了哪几件、若都买要多少钱，
+     免得对照表格时以为清单少列了东西。*/
+  const skip = S.products.filter(p=> offCats.includes(p.cat));
+  const skipEl = document.getElementById("bdSkip");
+  if(skipEl){
+    const extra = skip.reduce((s,p)=> s + bestSubtotal(p), 0);
+    const byCat = offCats.map(c=> `${c} ${skip.filter(p=>p.cat===c).length} 件`).join("、");
+    skipEl.innerHTML = skip.length
+      ? `<b>${esc(byCat)}</b> 未计入这套成机（若都买另需 ${money(Math.round(extra*100)/100)}）`
+      : "";
+    skipEl.style.display = skip.length ? "" : "none";
+  }
+  const tot = document.getElementById("bdTotal");
+  if(tot) tot.textContent = money(Math.round(build*100)/100);
+}
+
+function renderMeta(){
+  const dates = new Set();
+  Object.values(S.history).forEach(arr=> arr.forEach(x=> dates.add(x.d)));
+  document.getElementById("mUpd").textContent = S.updatedAt || "—";
+  document.getElementById("mHist").textContent = dates.size;
+  document.getElementById("fToday").textContent = TODAY;
+
+  const due = document.getElementById("mDue");
+  // 每次都重算：导入之后提醒要立刻消失，而不是挂着直到刷新
+  due.className = ""; due.textContent = "";
+  if(!storageOK()){
+    due.className = "due";
+    due.textContent = "当前浏览器禁用了本地存储，勾选不会保存 —— 建议用 Chrome 打开";
+  }
+  // 提醒只看上次「导入价格」的日期；特别老的数据没有这个字段才退回 updatedAt
+  const li = S.lastImport || S.updatedAt;
+  const last = li ? new Date(li + "T00:00:00") : null;
+  const now = new Date(TODAY + "T00:00:00");
+  if(last && !isNaN(last) && !due.textContent){
+    const days = Math.round((now - last) / 86400000);
+    if(days >= 3){ due.className = "due"; due.textContent = `距上次导入 ${days} 天，该查价了`; }
+  }
+}
+
+/* ---------- events ---------- */
+document.getElementById("list").addEventListener("change", e=>{
+  const inc = e.target.getAttribute("data-include");
+  if(inc){ toggleInclude(inc); return; }
+  const id = e.target.getAttribute("data-check");
+  if(!id) return;
+  const p = S.products.find(x=>x.id===id);
+  if(!p) return;
+  p.bought = e.target.checked;
+  save(); render();
+});
+
+document.getElementById("list").addEventListener("click", e=>{
+  const ch = e.target.closest("[data-chart]");
+  if(ch){ openChart(ch.getAttribute("data-chart")); return; }
+  const nk = e.target.closest("[data-nick]");
+  if(nk){ openForm(nk.getAttribute("data-nick"), "fNick"); return; }
+  const sr = e.target.closest("[data-star]");
+  if(sr){ toggleStar(sr.getAttribute("data-star")); return; }
+  const ed = e.target.closest("[data-edit]");
+  if(ed){ openForm(ed.getAttribute("data-edit")); return; }
+  const jd = e.target.closest("[data-jd]");
+  if(jd){ openForm(jd.getAttribute("data-jd"), "fJD"); return; }
+  const rm = e.target.closest("[data-del]");
+  if(rm){ deleteProduct(rm.getAttribute("data-del")); return; }
+});
+
+/* ---------- 筛选器 / 回收站 ---------- */
+document.getElementById("fbChips").addEventListener("click", e=>{
+  const b = e.target.closest("[data-fb]");
+  if(!b) return;
+  const v = b.getAttribute("data-fb");
+  if(v==="__all__"){
+    FILTER.cats.clear(); FILTER.q = "";
+    document.getElementById("fbSearch").value = "";
+  }else if(FILTER.cats.has(v)) FILTER.cats.delete(v);
+  else FILTER.cats.add(v);
+  render();
+});
+document.getElementById("fbSearch").addEventListener("input", e=>{
+  FILTER.q = e.target.value; render();
+});
+document.getElementById("fbClear").addEventListener("click", ()=>{
+  FILTER.cats.clear(); FILTER.q = "";
+  document.getElementById("fbSearch").value = "";
+  render();
+});
+document.getElementById("btnTrash").addEventListener("click", ()=> toggleTrash());
+document.getElementById("trashPanel").addEventListener("click", e=>{
+  const b = e.target.closest("[data-restore]");
+  if(b) restoreProduct(b.getAttribute("data-restore"));
+});
+
+/* ---------- modals ---------- */
+function openM(id){ document.getElementById(id).classList.add("on"); }
+function closeM(id){ document.getElementById(id).classList.remove("on"); }
+document.querySelectorAll("[data-close]").forEach(b=>{
+  b.addEventListener("click", ()=> b.closest(".ovl").classList.remove("on"));
+});
+document.querySelectorAll(".ovl").forEach(o=>{
+  o.addEventListener("click", e=>{ if(e.target===o) o.classList.remove("on"); });
+});
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape"){
+    document.querySelectorAll(".ovl.on").forEach(o=>o.classList.remove("on"));
+    toggleBuild(false);
+  }
+});
+
+/* ---------- add / edit ---------- */
+let editingId = null;
+/* 拆件表单：一次只编辑一个商品，用模块级变量记住当前模式，避免重复绑定事件 */
+let formSplitMode = "sum";
+
+function renderSplitBox(p){
+  const box = document.getElementById("fSplit");
+  const rows = document.getElementById("fSplitRows");
+  const show = !!p && hasParts(p);
+  box.style.display = show ? "block" : "none";
+  document.getElementById("fJDLabel").innerHTML = show
+    ? '京东价 ¥<span class="hint">（两件合计，下面可改单价）</span>'
+    : '京东价 ¥<span class="hint">（可留空）</span>';
+  if(!show) return;
+  formSplitMode = p.jdMode === "manual" ? "manual" : "sum";
+  document.getElementById("fSplitHd").textContent =
+    "淘宝买的是「板 U 套装」一件；京东不卖这个套装，要把 CPU 和主板分开买。下面两个单品价相加，就是京东价。";
+  rows.innerHTML = p.jdParts.map((q,i)=>`
+    <div class="sb-row">
+      <span class="sb-n">${esc(q.name)}<span class="sb-src">${esc(q.src||"")}</span></span>
+      <input type="number" min="0" step="0.01" data-part="${i}" value="${q.jd==null?"":q.jd}" placeholder="京东价">
+    </div>`).join("");
+  updateSplitSum();
+}
+
+function splitInputs(){
+  return [...document.querySelectorAll("#fSplitRows [data-part]")];
+}
+function currentSplitTotal(){
+  let s = 0;
+  for(const el of splitInputs()){
+    const v = parseFloat(el.value);
+    if(isNaN(v)) return null;
+    s += v;
+  }
+  return Math.round(s*100)/100;
+}
+function updateSplitSum(){
+  const p = editingId ? S.products.find(x=>x.id===editingId) : null;
+  const tot = currentSplitTotal();
+  document.getElementById("fSplitSum").textContent = tot==null ? "待补全" : money(tot);
+  const fJD = document.getElementById("fJD");
+  if(formSplitMode==="sum" && tot!=null) fJD.value = tot;
+  const tip = document.getElementById("fSplitTip");
+  const btn = document.getElementById("btnUseSum");
+  if(formSplitMode==="sum"){
+    tip.textContent = "当前为「自动加总」：改上面任一单品价，京东价会跟着变。检索清单也按这两个单品下发，以后不会搜不到。";
+    btn.textContent = "改用手动填总额";
+  }else{
+    tip.textContent = p && p.jd!=null
+      ? `当前为「手动填总额」：京东价 ${money(p.jd)} 是你自己填的值，拆件价只作参考，不会覆盖它。`
+      : "当前为「手动填总额」：拆件价只作参考。";
+    btn.textContent = "用两件加总值";
+  }
+}
+
+/* 别家店报价在表单里就是几行文字：一行一家「店名 价格」，好改好存 */
+function quotesText(qs){
+  return (Array.isArray(qs) ? qs : []).map(q=> q.shop + " " + q.price).join("\n");
+}
+function parseQuotes(text, old){
+  const out = [];
+  String(text||"").split(/\n+/).forEach(line=>{
+    const s = line.trim();
+    if(!s) return;
+    // 价格取这一行末尾的数字，允许 ¥ 和千分位逗号
+    const m = s.match(/([0-9][0-9,]*(?:\.[0-9]+)?)\s*$/);
+    if(!m) return;
+    const price = parseFloat(m[1].replace(/,/g,""));
+    const shop = s.slice(0, m.index).replace(/[¥￥:：,，\s]+$/,"").trim();
+    if(!shop || !(price > 0)) return;
+    const prev = (Array.isArray(old) ? old : []).find(q=>q.shop===shop);
+    out.push({shop, price, at:(prev&&prev.at)||TODAY, note:(prev&&prev.note)||""});
+  });
+  return out;
+}
+
+function openForm(id, focusId){
+  editingId = id || null;
+  const p = id ? S.products.find(x=>x.id===id) : null;
+  document.getElementById("fTitle").textContent = p ? "编辑商品" : "添加商品";
+  document.getElementById("fCat").value = p ? p.cat : "";
+  document.getElementById("fBrand").value = p ? p.brand : "";
+  document.getElementById("fModel").value = p ? p.model : "";
+  document.getElementById("fNick").value = p ? (p.nick || "") : "";
+  document.getElementById("fQty").value = p ? p.qty : 1;
+  document.getElementById("fPrice").value = p ? p.price : "";
+  document.getElementById("fLow").value = p && p.low!=null ? p.low : "";
+  document.getElementById("fAvg").value = p && p.avg!=null ? p.avg : "";
+  document.getElementById("fJD").value = p && p.jd!=null ? p.jd : "";
+  document.getElementById("fNote").value = p ? p.note : "";
+  document.getElementById("fQuotes").value = quotesText(p ? p.quotes : []);
+  document.getElementById("fHist").checked = !p;
+  document.getElementById("btnDel").style.display = p ? "inline-block" : "none";
+  renderSplitBox(p);
+  const rv = document.getElementById("btnRevert");
+  const hasSeed = p && SEED.products.some(x=>x.id===p.id);
+  rv.style.display = (hasSeed && p.userEdit && p.userEdit.length) ? "inline-block" : "none";
+  openM("ovlForm");
+  setTimeout(()=> document.getElementById(focusId || (p?"fPrice":"fCat")).focus(), 60);
+}
+
+/* 拆件区事件：只绑一次 */
+document.getElementById("fSplitRows").addEventListener("input", updateSplitSum);
+document.getElementById("fJD").addEventListener("input", ()=>{
+  const p = editingId ? S.products.find(x=>x.id===editingId) : null;
+  if(p && hasParts(p) && formSplitMode==="sum"){ formSplitMode = "manual"; updateSplitSum(); }
+});
+document.getElementById("btnUseSum").addEventListener("click", ()=>{
+  if(formSplitMode==="sum"){
+    formSplitMode = "manual";
+  }else{
+    const tot = currentSplitTotal();
+    if(tot==null){ alert("两个单品价都要填上才能加总"); return; }
+    formSplitMode = "sum";
+    document.getElementById("fJD").value = tot;
+  }
+  updateSplitSum();
+});
+
+document.getElementById("btnSync").addEventListener("click", ()=>{
+  const b = document.getElementById("btnSync");
+  // 另一端（手机 / 电脑）刚保存过：先把本地待存的改动推上去，再刷新拿新版
+  if(b.dataset.reload === "1"){
+    const go = ()=> location.reload();
+    if(dirty) syncNow(false).then(go).catch(go); else go();
+    return;
+  }
+  syncNow(true);
+});
+document.getElementById("btnAdd").addEventListener("click", ()=> openForm(null));
+document.getElementById("btnSave").addEventListener("click", ()=>{
+  const cat = document.getElementById("fCat").value.trim();
+  const brand = document.getElementById("fBrand").value.trim();
+  const model = document.getElementById("fModel").value.trim();
+  const nick = document.getElementById("fNick").value.trim();
+  const price = parseFloat(document.getElementById("fPrice").value);
+  if(!cat || !brand || !model || isNaN(price)){ alert("类目 / 品牌 / 型号 / 当前价 都得填"); return; }
+  const qty = Math.max(1, parseInt(document.getElementById("fQty").value||"1",10));
+  const lowV = document.getElementById("fLow").value, avgV = document.getElementById("fAvg").value;
+  const low = lowV===""? null : parseFloat(lowV);
+  const avg = avgV===""? null : parseFloat(avgV);
+  const note = document.getElementById("fNote").value.trim();
+  const jdV = document.getElementById("fJD").value;
+  let jd = jdV===""? null : parseFloat(jdV);
+  const writeHist = document.getElementById("fHist").checked;
+  // 别家店报价：一行一家「店名 价格」。同名店铺沿用原来的日期与备注，避免每次保存都刷新成今天
+  const _oldP = editingId ? S.products.find(x=>x.id===editingId) : null;
+  const quotes = parseQuotes(document.getElementById("fQuotes").value, _oldP ? _oldP.quotes : []);
+
+  // 拆件套餐：把两个单品价写回 jdParts，京东总价按模式决定
+  let partsChanged = false, modeChanged = false;
+  if(editingId){
+    const old = S.products.find(x=>x.id===editingId);
+    if(old && hasParts(old)){
+      splitInputs().forEach(el=>{
+        const i = Number(el.getAttribute("data-part"));
+        const v = el.value==="" ? null : parseFloat(el.value);
+        if(old.jdParts[i] && String(old.jdParts[i].jd) !== String(v)) partsChanged = true;
+        if(old.jdParts[i]) old.jdParts[i].jd = v;
+      });
+      if(old.jdMode !== formSplitMode) modeChanged = true;
+      old.jdMode = formSplitMode;
+      if(formSplitMode==="sum"){
+        const tot = partSum(old);
+        if(tot!=null) jd = tot;
+      }
+    }
+  }
+
+  let p;
+  if(editingId){
+    p = S.products.find(x=>x.id===editingId);
+    const next = {cat, brand, model, nick, qty, price, low, avg, note, jd, quotes};
+    const locked = new Set(Array.isArray(p.userEdit) ? p.userEdit : []);
+    Object.keys(next).forEach(k=>{
+      if(k === "quotes") return;   // 数组单独比，字符串化比不准
+      const a = p[k], b = next[k];
+      const same = (a===null||a===undefined) && (b===null||b===undefined)
+        || (a!==null && a!==undefined && b!==null && b!==undefined && String(a)===String(b));
+      if(!same) locked.add(k);
+    });
+    if(JSON.stringify(quotes) !== JSON.stringify(p.quotes || [])) locked.add("quotes");
+    if(partsChanged) locked.add("jdParts");
+    if(modeChanged) locked.add("jdMode");
+    Object.assign(p, next);
+    p.userEdit = [...locked];
+  }else{
+    p = {id: "p-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), cat, brand, model, nick, qty, price, low, avg, note, jd, quotes, bought:false, userEdit:[], jdParts:[], jdMode:"sum"};
+    S.products.push(p);
+  }
+  if(writeHist) addHistory(p.id, TODAY, price);
+  S.updatedAt = TODAY;
+  save(); closeM("ovlForm"); render();
+  syncNow(false);
+});
+
+document.getElementById("btnRevert").addEventListener("click", ()=>{
+  const src = SEED.products.find(x=>x.id===editingId);
+  const p = S.products.find(x=>x.id===editingId);
+  if(!src || !p) return;
+  ["cat","brand","model","qty","note","nick","low","avg","conf","hnote"].forEach(k=>{
+    if(src[k]!==undefined) p[k] = src[k];
+  });
+  p.quotes = Array.isArray(src.quotes) ? src.quotes.map(q=>({...q})) : [];
+  p.userEdit = [];
+  save(); closeM("ovlForm"); render();
+  toast("已恢复成文件里的信息");
+});
+
+document.getElementById("btnDel").addEventListener("click", ()=>{
+  if(!editingId) return;
+  const id = editingId;
+  if(deleteProduct(id)) closeM("ovlForm");   // 和行尾垃圾桶走同一套：确认、回收站、写回源文件
+});
+
+function addHistory(id, d, price){
+  const arr = S.history[id] || (S.history[id]=[]);
+  const i = arr.findIndex(x=>x.d===d);
+  if(i>=0) arr[i].p = price; else arr.push({d, p:price});
+  arr.sort((a,b)=> a.d<b.d?-1:1);
+}
+
+/* ---------- chart ---------- */
+function openChart(id){
+  const p = S.products.find(x=>x.id===id);
+  const h = histOf(id);
+  document.getElementById("chTitle").textContent = p.brand + " " + p.model;
+  document.getElementById("chSub").textContent = p.cat + " · 当前 " + money(p.price) + (h.length? " · " + h.length + " 个价格点" : "");
+  const box = document.getElementById("chBox");
+  if(h.length < 2){
+    box.innerHTML = '<p style="color:#9A928A;font-size:13px;margin:8px 0">还只有一天的价格，攒到第 2 天就能画线了。</p>';
+  }else{
+    box.innerHTML = chartSVG(h, p);
+  }
+  document.getElementById("chList").innerHTML = h.slice().reverse()
+    .map(x=> `<span>${esc(x.d)} · ${money(x.p)}</span>`).join("");
+  openM("ovlChart");
+}
+
+function chartSVG(h, p){
+  const W=740, H=260, L=58, R=64, T=18, B=32;
+  const vals = h.map(x=>x.p).concat([p.low, p.avg].filter(v=>v!=null));
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if(hi===lo){ hi=lo*1.02; lo=lo*0.98; }
+  const pad = (hi-lo)*0.12; lo-=pad; hi+=pad;
+  const x = i => L + i*(W-L-R)/Math.max(1,h.length-1);
+  const y = v => T + (hi-v)*(H-T-B)/(hi-lo);
+  const pts = h.map((pt,i)=> x(i).toFixed(1)+","+y(pt.p).toFixed(1)).join(" ");
+  const area = `M ${x(0).toFixed(1)} ${(H-B).toFixed(1)} L ` + h.map((pt,i)=>`${x(i).toFixed(1)} ${y(pt.p).toFixed(1)}`).join(" L ") + ` L ${x(h.length-1).toFixed(1)} ${(H-B).toFixed(1)} Z`;
+
+  let g = "";
+  for(let i=0;i<=4;i++){
+    const v = lo + (hi-lo)*i/4, yy = y(v);
+    g += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="#EDE7DD" stroke-width="1"/>
+          <text x="${L-10}" y="${(yy+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="#9A928A">${money(Math.round(v))}</text>`;
+  }
+  let refs = "";
+  if(p.avg!=null){
+    const yy = y(p.avg);
+    refs += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="#C0AF8C" stroke-width="1.2" stroke-dasharray="5 4"/>
+             <text x="${W-R+8}" y="${(yy+4).toFixed(1)}" font-size="10.5" fill="#A08F6C">均价</text>`;
+  }
+  if(p.low!=null){
+    const yy = y(p.low);
+    refs += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="#9DAE9C" stroke-width="1.2" stroke-dasharray="2 3"/>
+             <text x="${W-R+8}" y="${(yy+4).toFixed(1)}" font-size="10.5" fill="#6F856F">最低</text>`;
+  }
+  const step = Math.ceil(h.length/7);
+  let labels = "";
+  h.forEach((pt,i)=>{
+    if(i%step===0 || i===h.length-1){
+      labels += `<text x="${x(i).toFixed(1)}" y="${H-10}" text-anchor="middle" font-size="10.5" fill="#9A928A">${esc(pt.d.slice(5))}</text>`;
+    }
+  });
+  const dots = h.map((pt,i)=> `<circle cx="${x(i).toFixed(1)}" cy="${y(pt.p).toFixed(1)}" r="2.8" fill="#FBF9F5" stroke="#7F947F" stroke-width="1.6"><title>${esc(pt.d)} · ${money(pt.p)}</title></circle>`).join("");
+
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px">
+    ${g}
+    <path d="${area}" fill="rgba(157,174,156,.10)" stroke="none"/>
+    ${refs}
+    <polyline points="${pts}" fill="none" stroke="#8FA391" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}${labels}
+  </svg>`;
+}
+
+/* ---------- import ---------- */
+document.getElementById("btnImport").addEventListener("click", ()=> openM("ovlImport"));
+document.getElementById("btnPick").addEventListener("click", ()=> document.getElementById("fileInput").click());
+document.getElementById("fileInput").addEventListener("change", e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    try{
+      const data = JSON.parse(rd.result);
+      applyImport(data);
+    }catch(err){ alert("这个文件不是合法 JSON：" + err.message); }
+    e.target.value = "";
+  };
+  rd.readAsText(f);
+});
+
+function applyImport(data){
+  const date = data.date || TODAY;
+  const src = data.source || "";
+  let items = data.items || data;
+  let pairs = [];
+  if(Array.isArray(items)){
+    pairs = items.map(x=> Array.isArray(x) ? [x[0], x[1]] : [x.id, (x.price!=null? x.price : x.p)]);
+  }else{
+    pairs = Object.entries(items);
+  }
+  let n = 0, miss = [];
+  pairs.forEach(([id, price])=>{
+    const p = S.products.find(x=>x.id===id);
+    const v = Number(price);
+    if(!p || isNaN(v)){ if(!p) miss.push(id); return; }
+    p.price = v; addHistory(p.id, date, v); n++;
+    // 京东价：普通数字照旧；拆件套餐允许给两个单品价（数组或 {parts:[...]}），自动加总
+    if(data.jd && data.jd[id]!=null){
+      const raw = data.jd[id];
+      const arr = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.parts) ? raw.parts : null);
+      if(arr){
+        if(hasParts(p)){
+          arr.forEach((x,i)=>{
+            if(p.jdParts[i]) p.jdParts[i].jd = (x==null||x==="")? null : Number(x);
+          });
+          if(p.jdMode!=="manual"){
+            const s = partSum(p);
+            if(s!=null) p.jd = s;
+          }
+          p.userEdit = [...new Set([...(p.userEdit||[]), "jdParts", "jd"])];
+        }
+      }else if(!isNaN(Number(raw))){
+        p.jd = Number(raw);
+      }
+    }
+    if(data.low && data.low[id]!=null) p.low = Number(data.low[id]);
+    if(data.avg && data.avg[id]!=null) p.avg = Number(data.avg[id]);
+  });
+  data.pairsApplied = n;
+  const touched = new Set(pairs.map(([id])=>id));
+  if(data.meta){
+    if(data.meta.low) Object.entries(data.meta.low).forEach(([id,v])=>{ const p=S.products.find(x=>x.id===id); if(p){ p.low=Number(v); touched.add(id); } });
+    if(data.meta.avg) Object.entries(data.meta.avg).forEach(([id,v])=>{ const p=S.products.find(x=>x.id===id); if(p){ p.avg=Number(v); touched.add(id); } });
+  }
+  touched.forEach(id=>{
+    const p = S.products.find(x=>x.id===id);
+    if(p) p.userEdit = [...new Set([...(p.userEdit||[]), "price", "jd", "low", "avg"])];
+  });
+  S.updatedAt = date;
+  S.lastImport = date;
+  save(); closeM("ovlImport"); render();
+  alert(`已导入 ${n} 条价格（${date}）` + (src?`\n来源：${src}`:"") + (miss.length?`\n\n没认出来的 id：${miss.join(", ")}`:""));
+}
+
+/* ---------- export ---------- */
+document.getElementById("btnExport").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(S, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "装机比价-数据-" + TODAY + ".json";
+  a.click();
+  setTimeout(()=> URL.revokeObjectURL(a.href), 2000);
+});
+
+/* ---------- 一套成机明细 ---------- */
+function toggleBuild(force){
+  const card = document.getElementById("cardBuild");
+  const panel = document.getElementById("buildDetail");
+  const on = (force!==undefined) ? force : !panel.classList.contains("on");
+  panel.classList.toggle("on", on);
+  card.setAttribute("aria-expanded", on ? "true" : "false");
+}
+document.getElementById("cardBuild").addEventListener("click", ()=> toggleBuild());
+document.getElementById("cardBuild").addEventListener("keydown", e=>{
+  if(e.key==="Enter" || e.key===" "){ e.preventDefault(); toggleBuild(); }
+});
+document.getElementById("bdClose").addEventListener("click", e=>{
+  e.stopPropagation(); toggleBuild(false);
+});
+
+/* ---------- 云端设置面板 ---------- */
+function fillCloudForm(){
+  const c = cloudCfg() || {};
+  document.getElementById("cfOwner").value = c.owner || "";
+  document.getElementById("cfRepo").value = c.repo || "";
+  document.getElementById("cfPath").value = c.path || "配件清单.json";
+  document.getElementById("cfToken").value = c.token || "";
+  const st = document.getElementById("cfStatus");
+  if(cloudOn()){ st.className = "cf-status ok"; st.textContent = `已配置云端：${c.owner}/${c.repo}`; }
+  else { st.className = "cf-status"; st.textContent = "尚未配置云端"; }
+}
+document.getElementById("cfSave").addEventListener("click", async ()=>{
+  const c = {
+    owner:document.getElementById("cfOwner").value.trim(),
+    repo:document.getElementById("cfRepo").value.trim(),
+    path:document.getElementById("cfPath").value.trim() || "配件清单.json",
+    token:document.getElementById("cfToken").value.trim()
+  };
+  const st = document.getElementById("cfStatus");
+  if(!c.owner || !c.repo || !c.token){ st.className="cf-status bad"; st.textContent="用户名、仓库名、令牌三项都要填"; return; }
+  st.className = "cf-status"; st.textContent = "正在验证…";
+  try{
+    const who = await cloudCheck(c);
+    localStorage.setItem(CKEY, JSON.stringify(c));
+    cloudSHA = null;
+    document.getElementById("cfToken").type = "password";
+    st.className = "cf-status ok";
+    st.textContent = `已连接：${who} · ${c.owner}/${c.repo}`;
+    const b = document.getElementById("btnSync");
+    if(b){ b.classList.remove("offline"); b.textContent = saveLabel(); }
+    toast("云端已连上，顶部按钮现在保存到云端");
+    const got = await cloudPull(false);
+    if(!got) toast("仓库连上了，但里面还没有数据。点「上传到云端」建一份");
+  }catch(e){
+    st.className = "cf-status bad"; st.textContent = "连接失败：" + e.message;
+  }
+});
+document.getElementById("cfPull").addEventListener("click", async ()=>{
+  const st = document.getElementById("cfStatus");
+  try{ const got = await cloudPull(true); if(got){ st.className="cf-status ok"; st.textContent="刚刚从云端拉取成功"; closeM("ovlHelp"); } }
+  catch(e){ st.className="cf-status bad"; st.textContent="拉取失败：" + e.message; }
+});
+document.getElementById("cfPush").addEventListener("click", async ()=>{
+  const st = document.getElementById("cfStatus");
+  if(!cloudOn()){ st.className="cf-status bad"; st.textContent="请先保存设置"; return; }
+  if(!confirm("用当前浏览器里的数据覆盖云端仓库？会写进你的私有仓库。")) return;
+  cloudSHA = null;
+  dirty = true;
+  await cloudPush(true);
+  st.className = "cf-status ok"; st.textContent = "已上传到云端";
+});
+document.getElementById("cfClear").addEventListener("click", ()=>{
+  if(!confirm("清除本机保存的云端设置？云端数据不会删除。")) return;
+  localStorage.removeItem(CKEY);
+  cloudSHA = null;
+  fillCloudForm();
+  const b = document.getElementById("btnSync");
+  if(b){ b.classList.remove("offline","saved"); b.textContent = saveLabel(); }
+  toast("已清除本机云端设置");
+});
+document.getElementById("btnHelp").addEventListener("click", ()=>{ fillCloudForm(); openM("ovlHelp"); });
+document.getElementById("btnReset").addEventListener("click", ()=>{
+  if(!confirm("清空本浏览器缓存，重新从源文件载入？已写回源文件的内容不受影响。")) return;
+  localStorage.removeItem(KEY);
+  S = load(); render(); closeM("ovlHelp");
+});
+
+render();
+if(cloudOn()){
+  const b = document.getElementById("btnSync");
+  if(b){ b.textContent = saveLabel(); b.title = "写入你的 GitHub 私有仓库"; }
+}
+
+/* ---------- 连接管理与自动补存 ----------
+   页面打开时先探一次服务，没连上就把状态直接显示在按钮上。
+   连上后建立一条 SSE 长连接：页面还开着，服务就保持；标签页关掉，连接断开，
+   服务几秒后自行退出。开多个页面会等全部关掉才停，刷新页面也不会误停。
+   用长连接而不是定时心跳，是为了躲开浏览器对后台标签定时器的节流。
+
+   自动补存：手机上改完东西、Mac 又合盖时，改动一直挂在 dirty 上。
+   之后只要页面回到前台（SSE 重连成功、切换回来、网络恢复），
+   有未落盘的改动就自动送回，不需要记得点按钮。*/
+let connected = false;
+function probeServer(){
+  // 云端模式：不依赖本地服务，按钮常态显示云端保存
+  if(cloudOn()){
+    const b = document.getElementById("btnSync");
+    if(b && !b.classList.contains("busy")){
+      b.classList.remove("offline","saved");
+      b.textContent = dirty ? "未保存，点此存云端" : saveLabel();
+    }
+    return;
+  }
+  fetch(SYNC_BASE + "/api/status", {method:"GET"})
+    .then(r=>{ if(!r.ok) throw new Error("bad status"); return r.json(); })
+    .then(j=>{
+      if(j.service !== "pcsync") throw new Error("port taken");
+      connected = true;
+      const beat = new EventSource(SYNC_BASE + "/api/stream");
+      beat.onopen = ()=>{ if(dirty) syncNow(false); };
+      // 另一端保存了改动：文件 rev 变高，手上这份就旧了，按钮改成刷新入口。
+      // 自己保存时也会收到这条广播，用 rev 比对 + 保存中忽略两条规则错开。
+      beat.addEventListener("changed", ev=>{
+        const r = Number(ev.data) || 0;
+        if(r <= (S.rev || 0)) return;
+        const b = document.getElementById("btnSync");
+        if(!b || b.classList.contains("busy")) return;
+        b.classList.remove("saved", "offline");
+        b.dataset.reload = "1";
+        b.textContent = "文件已更新，点此刷新";
+        toast("另一台设备刚保存过，点顶部按钮刷新就能看到最新数据");
+      });
+      window.addEventListener("pagehide", ()=>{ try{ beat.close(); }catch(e){} });
+    })
+    .catch(()=>{
+      connected = false;
+      const b = document.getElementById("btnSync");
+      if(b && !b.classList.contains("busy")){
+        b.classList.add("offline");
+        b.textContent = dirty ? "未连接，有改动待存" : "服务未启动";
+      }
+    });
+}
+/* 云端模式启动：先按本地缓存渲染（秒开），再后台拉一次云端最新数据覆盖。
+   这样电脑合盖时手机照样能开，联网后自动拿到别人保存的改动。 */
+if(cloudOn()){
+  const b0 = document.getElementById("btnSync");
+  if(b0) b0.textContent = saveLabel();
+  cloudPull(false).catch(()=>{});
+}
+probeServer();
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState === "visible"){
+    if(cloudOn()){ cloudPull(false).catch(()=>{}); if(dirty) syncNow(false); }
+    else { probeServer(); if(dirty) syncNow(false); }
+  }
+});
+window.addEventListener("online", ()=>{
+  if(cloudOn()){ cloudPull(false).catch(()=>{}); if(dirty) syncNow(false); }
+  else probeServer();
+});
+
+/* 伪 App 的离线缓存：Mac 合盖、服务下线时，主屏幕图标照样能打开
+   （看到的是上次联网时的快照，改动会暂存、回连后自动补存）。
+   file:// 打开的桌面页面注册不上，静默跳过，不影响任何原有功能。 */
+if("serviceWorker" in navigator && (location.protocol === "http:" || location.protocol === "https:")){
+  // 相对路径注册：GitHub Pages 项目站在 /仓库名/ 子目录下，绝对路径会注册失败
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+
+/* 底部标签栏：复用已有功能，不引入新逻辑。
+   汇总 / 清单是滚动定位，添加 / 说明 / 我的分别唤起已有弹窗。 */
+(function(){
+  const bar = document.getElementById("tabbar");
+  if(!bar) return;
+  bar.addEventListener("click", e=>{
+    const btn = e.target.closest("button[data-tab]");
+    if(!btn) return;
+    const tab = btn.getAttribute("data-tab");
+    [...bar.querySelectorAll("button")].forEach(b=> b.classList.toggle("on", b===btn));
+    if(tab==="home"){ window.scrollTo({top:0,behavior:"smooth"}); }
+    else if(tab==="list"){ const el=document.getElementById("list"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); }
+    else if(tab==="add"){ openForm(null); }
+    else if(tab==="me"){ openM("ovlHelp"); }
+  });
+})();
+</script>
+</body>
+</html>
