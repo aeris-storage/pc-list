@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="装机比价">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#C9D6E8">
+<meta name="theme-color" content="#EDE7DC">
 <style>
 :root{
   /* 参考图配色：雾蓝灰底 + 白色大圆角卡片 + 亮蓝强调 + 藏青按钮 */
@@ -380,7 +380,7 @@ button{font:inherit}
   .fb-chips::-webkit-scrollbar{display:none}
   .fb-chip{border-radius:999px;padding:6px 13px}
   .fb-search{width:100%;flex:1;border-radius:999px;padding:8px 14px}
-  .fb-tools{width:100%}
+  .trend-filter .fb-tools{width:auto;flex:none;margin-left:auto}
   .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-bottom:18px}
   .card{padding:15px 16px 16px;border-radius:22px}
   .card .v{font-size:21px}
@@ -488,6 +488,476 @@ button{font:inherit}
 .tabbar button.add .plus svg{width:22px;height:22px;stroke:#fff}
 .tabbar button.add{color:var(--ink-3)}
 @media (max-width:760px){ .tabbar{display:flex} }
+
+/* ================= 米色玻璃风格（覆盖上面的蓝色主题） ================= */
+:root{
+  --bg:#E7E1D5; --bg2:#F1ECE2;
+  --paper:rgba(255,255,255,.66); --paper-hi:rgba(255,255,255,.80); --paper-lo:rgba(255,255,255,.46);
+  --line:rgba(255,255,255,.78); --line-soft:rgba(108,96,78,.11);
+  --ink:#2F2C27; --ink-2:#736C60; --ink-3:#A69D8E;
+  --blue:#555047; --blue-deep:#3A352E; --blue-soft:rgba(120,110,92,.10);
+  --sage:#71856A; --sage-deep:#536B52; --sage-bg:rgba(133,155,126,.16);
+  --olive:#7C7E68; --sand:#A79C86; --sand-bg:rgba(167,156,134,.14);
+  --clay:#B17D54; --clay-bg:rgba(196,140,94,.14);
+  --na-bg:rgba(150,140,122,.12); --na-ink:#9A9082;
+  --charcoal:#302E2A; --tb:#C08457; --jd:#B06A62;
+  --r:24px;
+}
+html{background:var(--bg)}
+body{
+  background:radial-gradient(900px 520px at 12% -8%,#F4EFE5 0%,transparent 62%),
+             radial-gradient(760px 520px at 92% 8%,#DED6C6 0%,transparent 58%),
+             linear-gradient(168deg,#EAE4D8 0%,#E3DCCE 52%,#E8E2D5 100%);
+  background-attachment:fixed;
+}
+.topbar{
+  background:rgba(231,225,213,.80);
+  border-bottom:1px solid rgba(255,255,255,.62);
+  padding-top:env(safe-area-inset-top,0px);
+}
+.mark{background:linear-gradient(135deg,#4A463F,#2B2824);box-shadow:0 4px 12px rgba(48,46,42,.20)}
+.btn{background:rgba(255,255,255,.62);border-color:rgba(255,255,255,.85);color:var(--ink-2);
+  box-shadow:0 2px 10px rgba(80,70,52,.06);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.btn:hover{background:rgba(255,255,255,.9);color:var(--ink);border-color:#fff}
+.btn.primary{background:var(--charcoal);border-color:var(--charcoal);color:#F7F2E9;
+  box-shadow:0 4px 14px rgba(48,46,42,.22)}
+.btn.primary:hover{background:#46423B;border-color:#46423B;color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.55)}
+.btn.offline{background:rgba(196,140,94,.18);border-color:rgba(196,140,94,.3);color:#9A6238}
+.btn.saved{background:var(--sage-bg);border-color:rgba(133,155,126,.35);color:var(--sage-deep)}
+.metarow{color:var(--ink-3)}
+.metarow b{color:var(--ink-2)}
+.metarow .dot{background:rgba(120,108,90,.4)}
+.due{background:rgba(196,140,94,.16);color:#9A6238}
+
+/* 卡片：半透明玻璃 + 大圆角 + 轻阴影 */
+.card,.group,.filterbar,.empty,.bd-panel,.trash-panel{
+  background:var(--paper);backdrop-filter:blur(18px) saturate(1.25);
+  -webkit-backdrop-filter:blur(18px) saturate(1.25);
+  border:1px solid var(--line);box-shadow:0 8px 30px rgba(86,74,54,.09)}
+.card.hl{background:linear-gradient(150deg,rgba(62,58,51,.96),rgba(40,37,33,.96));border-color:rgba(255,255,255,.14)}
+.card.hl .k{color:rgba(247,242,233,.78)}
+.card.hl .v,.card.hl .d,.card.hl .exp{color:#F7F2E9}
+.card.hl .d{color:rgba(247,242,233,.62)}
+.cards{gap:14px}
+.ghd{background:rgba(255,255,255,.32);border-bottom:1px solid var(--line-soft)}
+.inc{background:var(--blue-soft);color:var(--blue-deep)}
+.inc:hover{background:rgba(120,110,92,.18)}
+.inc input{border-color:rgba(120,110,92,.35);background:rgba(255,255,255,.8)}
+.inc input:checked{background:var(--charcoal);border-color:var(--charcoal)}
+.inc.off{background:rgba(196,140,94,.16);color:#9A6238}
+.cb input{border-color:rgba(120,110,92,.32);background:rgba(255,255,255,.78)}
+.cb input:hover{border-color:var(--charcoal)}
+.cb input:checked{background:var(--charcoal);border-color:var(--charcoal)}
+.star{color:rgba(120,110,92,.32)}
+.star:hover{color:#C39A4E}
+.star.on{color:#B58B3F}
+.nick{background:rgba(133,155,126,.18);color:#4C6548}
+.nick-add{border-color:rgba(120,110,92,.28);color:var(--ink-3)}
+.must{background:var(--sage-bg);color:var(--sage-deep)}
+.chip.low{background:var(--sage-bg);color:var(--sage-deep)}
+.chip.ok{background:rgba(133,155,126,.14);color:#5F745A}
+.chip.high{background:rgba(196,140,94,.16);color:#9A6238}
+.chip.na{background:var(--na-bg);color:var(--na-ink)}
+.foot{color:var(--ink-3)}
+.help code{background:rgba(150,138,118,.14);border-color:rgba(150,138,118,.16);color:#6B6153}
+.help pre{background:rgba(255,255,255,.42);border-color:var(--line-soft)}
+.help .note{background:rgba(255,255,255,.40);border-left-color:var(--sand)}
+.cloudbox{background:rgba(255,255,255,.42);border-color:var(--line-soft)}
+.fld input,.fld select,.fld textarea{background:rgba(255,255,255,.74);border-color:rgba(255,255,255,.9)}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#A9A08C;background:#fff;box-shadow:0 0 0 3px rgba(133,155,126,.14)}
+.modal{background:rgba(248,244,236,.94);border:1px solid rgba(255,255,255,.8);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:0 26px 70px rgba(60,52,38,.24)}
+.chartbox .hlist span,.hlist span{background:rgba(255,255,255,.55);border-color:var(--line-soft);color:var(--ink-2)}
+.toast{background:rgba(42,39,35,.94);color:#F4EEE3;border:1px solid rgba(255,255,255,.12)}
+
+/* ---------- 四页切换：抽屉式 ---------- */
+.pages{position:relative}
+.page{display:none}
+.page.on{display:block;animation:drawerIn .34s cubic-bezier(.22,1,.36,1) both}
+@keyframes drawerIn{from{opacity:0;transform:translate3d(26px,0,0) scale(.985)}
+  to{opacity:1;transform:none}}
+.page.leaving{display:block;animation:drawerOut .22s ease both;pointer-events:none}
+@keyframes drawerOut{to{opacity:0;transform:translate3d(-16px,0,0)}}
+@media (prefers-reduced-motion:reduce){.page.on,.page.leaving{animation:none}}
+
+/* 清单页：筛选器冻结在顶部 */
+#page-list .filterbar{position:sticky;top:76px;z-index:22}
+.fab{position:fixed;right:calc(18px + env(safe-area-inset-right,0px));top:88px;z-index:35;
+  width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.5);
+  background:var(--charcoal);color:#F7F2E9;display:none;place-items:center;cursor:pointer;
+  box-shadow:0 8px 22px rgba(48,46,42,.30);transition:transform .18s,opacity .18s}
+.fab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.fab:hover{transform:translateY(-2px)}
+.fab:active{transform:scale(.94)}
+
+/* ---------- 趋势页 ---------- */
+.trend-pick{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 14px;padding:14px 16px}
+.trend-pick label{font-size:12px;color:var(--ink-3)}
+.trend-pick select{flex:1;min-width:180px;font:inherit;font-size:14px;color:var(--ink);
+  background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.9);border-radius:12px;padding:9px 12px;outline:none}
+.trend-pick select:focus{border-color:#A9A08C}
+.trend-card{padding:18px 18px 14px;margin-bottom:14px}
+.trend-card .th{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.trend-card .th b{font-size:15px;font-weight:600}
+.trend-card .th span{font-size:11.5px;color:var(--ink-3)}
+.legend2{display:flex;gap:14px;align-items:center;font-size:11.5px;color:var(--ink-2)}
+.legend2 i{display:inline-block;width:16px;height:2.5px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.legend2 .i-tb{background:var(--tb)}
+.legend2 .i-jd{background:var(--jd)}
+.trend-svg{width:100%;overflow:hidden;border-radius:14px;background:rgba(255,255,255,.28)}
+.trend-hist{display:flex;flex-wrap:wrap;gap:7px;padding:14px 16px}
+.trend-hist span{font-size:11.5px;color:var(--ink-2);background:rgba(255,255,255,.55);
+  border:1px solid var(--line-soft);border-radius:999px;padding:4px 10px;font-variant-numeric:tabular-nums}
+.trend-empty{padding:42px 20px;text-align:center;color:var(--ink-3);font-size:13px;line-height:1.8}
+
+/* ---------- 我的页：说明按卡片分块 ---------- */
+#page-me .help{padding:0}
+#page-me .help section{background:var(--paper);border:1px solid var(--line);border-radius:20px;
+  backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);
+  box-shadow:0 8px 30px rgba(86,74,54,.08);padding:16px 18px;margin-bottom:13px}
+#page-me .help h4{margin:0 0 10px;font-size:14px;color:var(--ink);
+  display:flex;align-items:center;gap:9px}
+#page-me .help h4::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--charcoal);flex:none}
+#page-me .cloudbox{margin:0}
+.me-foot{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}
+
+/* ---------- 手机：底部四栏（胶囊玻璃） ---------- */
+.tabbar{
+  height:calc(66px + env(safe-area-inset-bottom,0px));
+  padding:0 14px env(safe-area-inset-bottom,0px);
+  left:14px;right:14px;bottom:12px;width:auto;
+  border:1px solid rgba(255,255,255,.85);border-radius:24px;
+  background:rgba(250,247,240,.72);
+  backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
+  box-shadow:0 12px 34px rgba(74,64,46,.18);gap:4px;
+}
+.tabbar button{border-radius:18px;gap:4px;font-size:10.5px;color:var(--ink-3);padding:9px 2px;
+  transition:color .2s,background .28s cubic-bezier(.22,1,.36,1),transform .2s}
+.tabbar button.on{color:#F7F2E9;background:var(--charcoal);
+  box-shadow:0 6px 16px rgba(48,46,42,.24);transform:translateY(-1px)}
+.tabbar button.on svg{stroke:#F7F2E9}
+.tabbar button svg{width:22px;height:22px;transition:stroke .2s}
+.tabbar button.add{display:none}
+.fab{display:grid}
+
+
+/* ================= 本轮精修：两端对齐 / 更强的玻璃感 / 分区小卡 ================= */
+
+/* --- 顶部栏：去掉 logo 后标题放大、拉开呼吸感；四按钮等宽对齐 --- */
+.brand{gap:0}
+.brand h1{font-size:23px;font-weight:700;letter-spacing:.02em;line-height:1.1}
+.brand .sub{margin-top:5px;font-size:12px;letter-spacing:.01em}
+@media (max-width:760px){
+  .topbar .wrap{padding:14px 20px 12px;row-gap:13px}
+  .brand h1{font-size:25px}
+  .topbar .actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:8px;width:100%;overflow:visible;padding-bottom:0}
+  .topbar .actions .btn{width:100%;padding:10px 4px;font-size:12px;text-align:center;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:12px}
+  .wrap{padding-left:20px;padding-right:20px}
+}
+
+/* --- 通用分区小卡：卡片内再垫一层高透明玻璃，把每个价格区隔开 --- */
+.pcell{background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.62);
+  border-radius:13px;padding:8px 11px 9px;box-shadow:0 2px 10px rgba(86,74,54,.05);
+  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.plbl{display:block;font-size:9.5px;color:var(--ink-3);letter-spacing:.04em;
+  margin-bottom:5px;line-height:1;font-weight:500}
+
+/* --- 手机商品卡：分区两行，价格两端对齐，杜绝叠字 --- */
+@media (max-width:760px){
+  .group{margin-bottom:16px;box-shadow:0 10px 34px rgba(86,74,54,.12)}
+  .row.body{
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    grid-template-areas:
+      "st ck nm nm nm ac"
+      "cu cu jd jd cp cp"
+      "lo lo av av ch ch";
+    gap:11px 9px;padding:15px 14px 16px;
+  }
+  .row.body>*{min-width:0}
+  /* 去掉迷你走势后，行内共 11 个子格，按新顺序映射 */
+  .row.body>*:nth-child(1){grid-area:st}
+  .row.body>*:nth-child(2){grid-area:ck}
+  .row.body>*:nth-child(3){grid-area:nm}
+  .row.body>*:nth-child(4){grid-area:nm;justify-self:end;align-self:start;
+    margin:2px 2px 0 0;font-size:11px;background:rgba(167,156,134,.16);color:var(--ink-2);
+    padding:2px 9px;border-radius:999px;z-index:2}
+  .row.body>*:nth-child(5){grid-area:cu}
+  .row.body>*:nth-child(6){grid-area:jd}
+  .row.body>*:nth-child(7){grid-area:cp}
+  .row.body>*:nth-child(8){grid-area:lo}
+  .row.body>*:nth-child(9){grid-area:av}
+  .row.body>*:nth-child(10){grid-area:ch}
+  .row.body>*:nth-child(11){grid-area:ac;align-self:start;justify-content:flex-end}
+  .row.body>.c-name{padding-right:52px;text-align:left;width:100%;justify-self:stretch}
+  /* 旧版 ::before 标签已由真实 .plbl 元素取代，这里彻底关掉，避免叠字 */
+  .row.body>*:nth-child(7)::before,
+  .row.body>*:nth-child(10)::before,
+  .row.body>*:nth-child(11)::before{display:none;content:none}
+  /* 每个数值区做成高透明小卡，标签左、数值右，两端对齐 */
+  .row.body .num,.row.body .pstat{
+    background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.62);
+    border-radius:13px;padding:8px 11px 9px;box-shadow:0 2px 10px rgba(86,74,54,.05);
+    backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+    text-align:left;display:flex;flex-direction:column;justify-content:center;min-height:52px}
+  .row.body .num::before{display:none}
+  .row.body .plbl{display:block;font-size:9.5px;color:var(--ink-3);letter-spacing:.04em;
+    margin-bottom:5px;line-height:1;font-weight:500}
+  .row.body .pval{display:block;text-align:right;font-size:13.5px;line-height:1.25;font-weight:600;
+    color:var(--ink);white-space:normal}
+  .row.body .num.cur .pval{font-size:15px;color:var(--charcoal)}
+  .row.body .num .qline{font-size:9.5px;text-align:right;margin-top:4px;line-height:1.4}
+  .row.body .num .jd-split{margin-left:0;margin-top:3px;display:inline-block}
+  .row.body .pstat .pval{text-align:right}
+  .row.body .chip{font-size:10px;padding:3px 9px}
+  .row.body .c-name .bd{font-size:13.5px;font-weight:700;line-height:1.4}
+  .row.body .c-name .nm{font-size:12px;line-height:1.45;margin-top:3px}
+  .row.body .c-name .nt{font-size:10.5px;line-height:1.45}
+  .row.body .nick,.row.body .must{margin:2px 0 0 5px;vertical-align:baseline}
+  .row.body .c-act{align-self:start;justify-content:flex-end}
+}
+
+/* --- 结算明细：一件商品一张卡，彻底告别叠字 --- */
+.bd-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;
+  border-top:0;padding-top:2px}
+.bd-card{background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.7);
+  border-radius:15px;padding:12px 13px 11px;box-shadow:0 3px 14px rgba(86,74,54,.06);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .15s}
+.bd-card.got{opacity:.55}
+.bd-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.bd-card .bd-cat{font-size:11px;min-width:0;flex:1}
+.bd-card .bd-cat em{font-size:9.5px}
+.bd-card .bd-price{font-size:14px;font-weight:700;color:var(--charcoal);flex:none}
+.bd-card .bd-name{font-size:12.5px;line-height:1.5;white-space:normal;overflow:visible;
+  text-overflow:clip;word-break:break-word;margin-bottom:9px}
+.bd-card-bot{display:flex;align-items:center;gap:8px}
+.bd-card-bot .bd-qty{margin-left:auto}
+@media (max-width:760px){ .bd-list{grid-template-columns:1fr;gap:9px} }
+
+/* --- 趋势页筛选器冻结在顶部 --- */
+.trend-filter{position:sticky;top:76px;z-index:22}
+
+/* --- 整体玻璃感加强：卡片更透、模糊更重，背景多层柔和渐变 --- */
+:root{ --paper:rgba(255,255,255,.52); --paper-hi:rgba(255,255,255,.7); --paper-lo:rgba(255,255,255,.38) }
+body{
+  background:
+    radial-gradient(1100px 620px at 8% -10%,rgba(237,231,220,.95) 0%,transparent 60%),
+    radial-gradient(900px 560px at 100% 4%,rgba(237,231,220,.62) 0%,transparent 58%),
+    radial-gradient(760px 620px at 50% 100%,rgba(214,199,178,.42) 0%,transparent 62%),
+    linear-gradient(170deg,#EDE7DC 0%,#E4DDCF 48%,#E9E2D6 100%);
+  background-attachment:fixed;
+}
+.card,.group,.filterbar,.empty,.bd-panel,.trash-panel,.bd-card{
+  background:var(--paper);
+  backdrop-filter:blur(26px) saturate(1.45);-webkit-backdrop-filter:blur(26px) saturate(1.45);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:0 10px 36px rgba(86,74,54,.10),inset 0 1px 0 rgba(255,255,255,.6)}
+.ghd{background:rgba(255,255,255,.4)}
+.trend-svg{background:rgba(255,255,255,.4)}
+
+
+/* ================= 无缝一体 · 去白框 · 柔阴影 · 真冻结（最终覆盖层） ================= */
+
+/* 顶栏：去掉白色分割线，实底微影，和下方筛选器无缝衔接 */
+.topbar{
+  border:0!important;
+  background:rgba(237,231,220,.96)!important;
+  backdrop-filter:blur(20px) saturate(1.4)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(1.4)!important;
+  box-shadow:0 3px 14px rgba(74,64,46,.06)!important;
+}
+
+/* 外层卡片：去掉白色描边和 inset 白高光，只留柔和阴影制造微悬浮 */
+.card,.group,.filterbar,.empty,.bd-panel,.trash-panel,.bd-card,
+#page-me .help section,.trend-pick,.trend-card,.trend-hist,.modal{
+  border:0!important;
+  box-shadow:0 6px 22px rgba(74,64,46,.09)!important;
+}
+.card.hl{border:0!important;box-shadow:0 8px 24px rgba(48,46,42,.20)!important}
+
+/* 冻结筛选器：实底不透明 + top 跟随顶栏实高，滚过来时绝不再透出商品文字 */
+#page-list .filterbar,.trend-filter{
+  position:sticky!important;
+  top:var(--sticky-top,104px)!important;
+  z-index:25!important;
+  background:#EDE7DC!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  border-radius:0 0 16px 16px!important;
+  margin:0 0 14px!important;
+  box-shadow:0 8px 20px rgba(74,64,46,.12)!important;
+}
+
+/* 各类小按钮 / 标签：去白边，只留极淡描边 */
+.fb-chip,.btn,.hlist span,.trend-hist span{border-color:rgba(120,110,92,.13)!important}
+.btn.primary{border-color:transparent!important}
+.fb-chip.on{border-color:rgba(113,133,106,.32)!important}
+
+/* 价格小卡：比外层更实一点（不再比外层更透），无白边无内高光 */
+.row.body .num,.row.body .pstat{
+  background:rgba(255,255,255,.72)!important;
+  border:0!important;
+  box-shadow:0 1px 4px rgba(74,64,46,.04)!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+
+/* 清单商品卡：商品名横贯整行，星标/勾选/数量/操作收进下方一条小工具行 */
+@media (max-width:760px){
+  .row.body{
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    grid-template-areas:
+      "nm nm nm nm nm nm nm nm nm nm nm nm"
+      "st ck ck qt .  .  .  .  ac ac ac ac"
+      "cu cu cu cu jd jd jd jd cp cp cp cp"
+      "lo lo lo lo av av av av ch ch ch ch";
+    gap:9px 6px;padding:16px 15px 15px;
+  }
+  .row.body>*:nth-child(1){grid-area:st;justify-self:start}
+  .row.body>*:nth-child(2){grid-area:ck;justify-self:start}
+  .row.body>*:nth-child(3){grid-area:nm;width:100%;justify-self:stretch;padding-right:0!important;text-align:left!important}
+  .row.body>*:nth-child(4){grid-area:qt;justify-self:start;margin:0!important}
+  .row.body>*:nth-child(5){grid-area:cu}
+  .row.body>*:nth-child(6){grid-area:jd}
+  .row.body>*:nth-child(7){grid-area:cp}
+  .row.body>*:nth-child(8){grid-area:lo}
+  .row.body>*:nth-child(9){grid-area:av}
+  .row.body>*:nth-child(10){grid-area:ch}
+  .row.body>*:nth-child(11){grid-area:ac;justify-self:end;align-self:center;justify-content:flex-end}
+  .row.body .c-name .bd{font-size:14px;line-height:1.45}
+  .row.body .c-name .nm{font-size:12.5px;line-height:1.5;margin-top:3px}
+  .row.body .c-name .nt{font-size:11px;line-height:1.5;margin-top:2px}
+  .row.body .c-qty{font-size:10.5px;padding:2px 7px!important}
+  .row.body .c-act{align-self:center!important}
+}
+
+/* 底部胶囊：固定在底部、柔阴影悬浮；四个图标严格居中 */
+.tabbar{
+  border:0!important;
+  background:rgba(248,244,236,.84)!important;
+  box-shadow:0 10px 30px rgba(74,64,46,.22)!important;
+  padding:0 12px env(safe-area-inset-bottom,0px)!important;
+  gap:6px!important;
+}
+.tabbar button{padding:9px 0!important;gap:3px!important;min-width:0;flex:1 1 0!important}
+.tabbar button.on{transform:none!important}
+.tabbar button svg{display:block!important;flex:none!important;margin:0 auto!important}
+.tabbar button span{line-height:1.15;white-space:nowrap}
+
+
+/* ============ 底板一体 + 筛选器独立 + 状态区分 + 胶囊居中（最终层） ============ */
+
+/* 顶栏：完全透明，标题和按钮直接坐在背景底板上，不形成独立色块/阴影 */
+.topbar{
+  position:static!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.topbar .wrap{padding-top:calc(env(safe-area-inset-top,0px) + 16px)!important}
+
+/* 筛选器：独立悬浮卡片，完整圆角、与顶部留出呼吸感；冻结但不再贴顶成一片 */
+#page-list .filterbar,.trend-filter{
+  position:sticky!important;
+  top:calc(env(safe-area-inset-top,0px) + 10px)!important;
+  z-index:25!important;
+  margin:6px 0 14px!important;
+  border-radius:18px!important;
+  background:rgba(245,241,233,.97)!important;
+  box-shadow:0 8px 24px rgba(74,64,46,.13)!important;
+}
+
+/* 结算明细标题行的渠道小标识：放在"已点星"之后，做成柔和色签 */
+.bd-card-top .bd-cat{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.bd-card .bd-src{font-size:9.5px;padding:1px 7px;border-radius:999px;flex:none}
+
+/* 状态格：给一点区别于价格格的暖色底，制造区分 */
+.row.body .pstat{background:rgba(196,140,94,.13)!important}
+
+/* 底部胶囊：图标与文字作为一组整体垂直居中 */
+.tabbar button{
+  height:100%!important;
+  padding:0!important;
+  gap:4px!important;
+  justify-content:center!important;
+  align-items:center!important;
+  line-height:1!important;
+}
+.tabbar button svg{width:21px;height:21px;margin:0!important}
+.tabbar button span{line-height:1.1!important}
+
+
+/* ===== 本轮修正：顶栏随筛选器一起冻结 / 图标右移 / 状态去底 / 胶囊真居中 ===== */
+
+/* 顶栏重新冻结：标题 + 四个按钮和筛选器一起吸顶，实底不透光 */
+.topbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:30!important;
+  background:#EDE7DC!important;
+  box-shadow:0 6px 18px rgba(74,64,46,.10)!important;
+}
+#page-list .filterbar,.trend-filter{
+  top:calc(var(--sticky-top,104px) + 10px)!important;
+  z-index:25!important;
+}
+
+/* 清单商品：数量跟在型号/规格后面；星标与勾选框移到右侧操作区 */
+.qty-inline{display:none}
+@media (max-width:760px){
+  .row.body{
+    grid-template-areas:
+      "nm nm nm nm nm nm nm nm nm nm nm nm"
+      ".  .  .  .  .  .  .  .  st ck ac ac"
+      "cu cu cu cu jd jd jd jd cp cp cp cp"
+      "lo lo lo lo av av av av ch ch ch ch";
+  }
+  .row.body>*:nth-child(1){grid-area:st;justify-self:end}
+  .row.body>*:nth-child(2){grid-area:ck;justify-self:start}
+  .row.body>*:nth-child(11){grid-area:ac;justify-self:end}
+  .row.body>.c-qty{display:none}
+  .c-name .qty-inline{
+    display:inline-block;margin-left:7px;padding:1px 8px;border-radius:999px;
+    background:rgba(167,156,134,.16);color:var(--ink-2);font-size:10.5px;
+    line-height:1.5;vertical-align:1px;white-space:nowrap;font-variant-numeric:tabular-nums;
+  }
+}
+
+/* 状态格：去掉暖色卡片底，只留标签和状态签 */
+.row.body .pstat{background:transparent!important;box-shadow:none!important}
+
+/* 底部胶囊：整只胶囊抬离安全区，按钮才能真正垂直居中 */
+.tabbar{
+  height:66px!important;
+  bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+  padding:0 12px!important;
+}
+
+/* ===== 本轮：顶部状态栏/标题同色无缝 + 选中胶囊缩小留边 ===== */
+
+/* 顶栏底色一直铺到刘海/状态栏区域，与系统状态栏主题色一致；
+   去掉自身阴影和双层安全区留白，消除横向模块分界线 */
+.topbar{
+  padding-top:0!important;
+  background:#EDE7DC!important;
+  box-shadow:none!important;
+}
+.topbar .wrap{padding-top:calc(env(safe-area-inset-top,0px) + 14px)!important}
+
+/* 选中态深色块收进外层胶囊：四边留出空隙，不再贴边占满 */
+.tabbar{
+  padding:0 16px!important;
+  gap:10px!important;
+}
+.tabbar button{
+  height:50px!important;
+  align-self:center!important;
+  border-radius:16px!important;
+}
+.tabbar button.on{box-shadow:0 4px 12px rgba(48,46,42,.18)!important}
+
 </style>
 </head>
 <body>
@@ -495,23 +965,20 @@ button{font:inherit}
 <div class="topbar">
   <div class="wrap">
     <div class="brand">
-      <div class="mark">PC</div>
-      <div>
-        <h1>装机比价</h1>
-        <div class="sub">淘宝购物车 · 目标 2027 年 618 入手</div>
-      </div>
+      <h1>PC-LIST</h1>
+      <div class="sub">装机比价 · 目标 2027 年 618 入手</div>
     </div>
     <div class="actions">
-      <button class="btn primary" id="btnSync" title="写入 配件清单.json 并重建 HTML">保存到源文件</button>
       <button class="btn" id="btnAdd">＋ 添加商品</button>
       <button class="btn" id="btnImport">导入价格</button>
       <button class="btn" id="btnExport">导出数据</button>
-      <button class="btn ghost" id="btnHelp">说明</button>
+      <button class="btn primary" id="btnSync" title="写入 配件清单.json 并重建 HTML">保存到源文件</button>
     </div>
   </div>
 </div>
 
-<div class="wrap">
+<div class="wrap pages">
+  <section class="page on" id="page-home">
   <div class="metarow">
     <span>数据更新于 <b id="mUpd">—</b></span><span class="dot"></span>
     <span>价格历史 <b id="mHist">0</b> 个日期</span><span class="dot"></span>
@@ -544,7 +1011,10 @@ button{font:inherit}
     <div class="bd-skip" id="bdSkip"></div>
     <div class="bd-foot"><span>合计</span><span id="bdTotal">—</span></div>
   </div>
+  </section>
 
+  <!-- 清单页 -->
+  <section class="page" id="page-list">
   <div class="filterbar" id="filterBar">
     <div class="fb-row">
       <span class="fb-label">只看</span>
@@ -572,7 +1042,41 @@ button{font:inherit}
     </div>
     <div>价格仅覆盖官方渠道（天猫旗舰店 / 京东自营 / 京东品牌旗舰店）</div>
   </div>
-</div>
+  </section><!-- 清单页结束 -->
+
+  <!-- 趋势页 -->
+  <section class="page" id="page-trend">
+    <div class="filterbar trend-filter" id="trendFilter">
+      <div class="fb-row">
+        <span class="fb-label">只看</span>
+        <div class="fb-chips" id="trChips"></div>
+        <div class="fb-tools">
+          <button class="btn ghost sm" id="trClear" title="清除趋势筛选">清除</button>
+        </div>
+      </div>
+    </div>
+    <div class="trend-pick card">
+      <label>看哪一件</label>
+      <select id="trPick" aria-label="选择商品"></select>
+    </div>
+    <div class="trend-card card">
+      <div class="th"><b id="trTitle">价格趋势</b><span id="trSub">—</span></div>
+      <div class="trend-svg" id="trBox"></div>
+      <div class="legend2" style="margin-top:11px">
+        <span><i class="i-tb"></i>淘宝 / 天猫</span><span><i class="i-jd"></i>京东</span>
+        <span id="trRef"></span>
+      </div>
+    </div>
+    <div class="trend-hist card" id="trList"></div>
+  </section>
+
+  <!-- 我的页 -->
+  <section class="page" id="page-me">
+    <div class="help" id="meHelp"></div>
+    <div class="me-foot" id="meFoot"></div>
+  </section>
+
+  </div>
 
 <!-- 添加 / 编辑 -->
 <div class="ovl" id="ovlForm">
@@ -802,19 +1306,19 @@ button{font:inherit}
 
 <!-- 底部标签栏（手机） -->
 <nav class="tabbar" id="tabbar">
-  <button class="tb on" data-tab="home" aria-label="汇总">
+  <button class="tb on" data-tab="home" aria-label="首页">
     <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.5 20v-6h5v6"/></svg>
-    <span>汇总</span>
+    <span>首页</span>
   </button>
   <button class="tb" data-tab="list" aria-label="清单">
     <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
     <span>清单</span>
   </button>
-  <button class="tb add" data-tab="add" aria-label="添加商品">
-    <span class="plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
-    <span>添加</span>
+  <button class="tb" data-tab="trend" aria-label="趋势">
+    <svg viewBox="0 0 24 24"><path d="M3 17l5.5-6 4 3.5L21 6"/><path d="M16 6h5v5"/></svg>
+    <span>趋势</span>
   </button>
-  <button class="tb" data-tab="me" aria-label="说明与设置">
+  <button class="tb" data-tab="me" aria-label="我的">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
     <span>我的</span>
   </button>
@@ -824,7 +1328,7 @@ button{font:inherit}
 const SEED = {
   "updatedAt": "",
   "lastImport": "2026-11-13",
-  "builtAt": "2026-11-16 17:38",
+  "builtAt": "2026-11-16 20:12",
   "rev": 0,
   "deleted": [],
   "stars": [],
@@ -956,9 +1460,16 @@ function mergeFile(stored){
   const fileHist = SEED.history || {};
   Object.keys(fileHist).forEach(id=>{
     const base = {};
-    (fileHist[id]||[]).forEach(x=> base[x.d]=x.p);
-    (stored.history[id]||[]).forEach(x=> base[x.d]=x.p);
-    stored.history[id] = Object.keys(base).sort().map(d=>({d, p:base[d]}));
+    (fileHist[id]||[]).forEach(x=> base[x.d]=x);
+    (stored.history[id]||[]).forEach(x=>{
+      // 本地已有的那天，京东价没记过就别把文件里的抹掉
+      base[x.d] = Object.assign({}, base[x.d], x);
+    });
+    stored.history[id] = Object.keys(base).sort().map(d=>{
+      const x = base[d], out = {d, p:x.p};
+      if(x.j!=null) out.j = x.j;   // 京东历史
+      return out;
+    });
   });
   // 文件更新后，若点过星的商品被移走或改了类目，星标要跟着失效
   pruneStars(stored);
@@ -1370,6 +1881,59 @@ function sparkSVG(id){
     <circle cx="${x(h.length-1).toFixed(1)}" cy="${y(last.p).toFixed(1)}" r="2.1" fill="#7F947F"/></svg>`;
 }
 
+/* ---------- 趋势页 ---------- */
+let trCurrent = null;
+const TRFILTER = { cats:new Set() };
+function trendPool(){ return S.products.filter(p=> histOf(p.id).length>0); }
+function renderTrendChips(){
+  const box = document.getElementById("trChips");
+  if(!box) return;
+  const pool = trendPool();
+  const counts = new Map();
+  pool.forEach(p=> counts.set(p.cat,(counts.get(p.cat)||0)+1));
+  const cats = [...counts.keys()].sort((a,b)=> catIndex(a)-catIndex(b) || a.localeCompare(b,"zh"));
+  const active = TRFILTER.cats.size>0;
+  let chips = `<button class="fb-chip${active?"":" on"}" data-tfb="__all__">全部 <b>${pool.length}</b></button>`;
+  cats.forEach(c=> chips += `<button class="fb-chip${TRFILTER.cats.has(c)?" on":""}" data-tfb="${esc(c)}">${esc(c)} <b>${counts.get(c)}</b></button>`);
+  box.innerHTML = cats.length ? chips : '<span style="font-size:11.5px;color:var(--ink-3)">还没有带历史的商品</span>';
+}
+function renderTrend(){
+  const sel = document.getElementById("trPick");
+  if(!sel) return;
+  renderTrendChips();
+  const pool = trendPool();
+  const withHist = TRFILTER.cats.size ? pool.filter(p=>TRFILTER.cats.has(p.cat)) : pool;
+  sel.innerHTML = withHist.length
+    ? withHist.map(p=>`<option value="${esc(p.id)}">${esc(p.cat)} · ${esc(p.brand)} ${esc(p.model)}</option>`).join("")
+    : '<option value="">（这个筛选下没有价格历史）</option>';
+  const wanted = trCurrent && withHist.some(p=>p.id===trCurrent) ? trCurrent : (withHist[0]&&withHist[0].id);
+  if(wanted){ sel.value = wanted; trCurrent = wanted; }
+  drawTrend(wanted);
+}
+function drawTrend(id){
+  const t=document.getElementById("trTitle"), sub=document.getElementById("trSub"),
+        box=document.getElementById("trBox"), list=document.getElementById("trList"),
+        ref=document.getElementById("trRef");
+  const p = S.products.find(x=>x.id===id);
+  if(!p){
+    if(t) t.textContent="价格趋势";
+    if(sub) sub.textContent="";
+    if(box) box.innerHTML='<div class="trend-empty">还没有价格历史。手机或电脑上编辑商品时勾上「写入今天」，攒到两天就能画出线。</div>';
+    if(list) list.innerHTML="";
+    if(ref) ref.textContent="";
+    return;
+  }
+  const h = histOf(id);
+  if(t) t.textContent = p.nick ? `${p.brand} ${p.nick}` : `${p.brand} ${p.model}`;
+  if(sub) sub.textContent = `${p.cat} · 当前淘宝 ${money(p.price)}${p.jd!=null?" · 京东 "+money(p.jd):""} · ${h.length} 个价格点`;
+  if(box) box.innerHTML = h.length<2
+    ? '<div class="trend-empty">只有 1 天价格，攒到第 2 天就能画线了。<br>淘宝历史 '+h.length+' 点 · 京东历史 '+h.filter(x=>x.j!=null).length+' 点</div>'
+    : chartSVG(h,p);
+  if(list) list.innerHTML = h.slice().reverse().map(x=>
+    `<span>${esc(x.d)} · 淘宝 ${money(x.p)}${x.j!=null?" · 京东 "+money(x.j):""}</span>`).join("");
+  if(ref) ref.textContent = [p.low!=null?"最低 "+money(p.low):"", p.avg!=null?"均价 "+money(p.avg):""].filter(Boolean).join(" · ");
+}
+document.addEventListener("DOMContentLoaded", ()=>{});
 /* ---------- render ---------- */
 function render(){
   const byCat = new Map();
@@ -1424,7 +1988,7 @@ function render(){
           <div class="c-check">已购</div><div>商品</div><div style="text-align:center">数量</div>
           <div class="num">淘宝价</div><div class="num">京东价</div><div class="num">差价</div>
           <div class="num">6 个月最低</div><div class="num">6 个月均价</div>
-          <div style="text-align:center">状态</div><div style="text-align:center">走势</div><div></div>
+          <div>状态</div><div></div>
         </div>`;
 
     viewItems.forEach(p=>{
@@ -1439,17 +2003,16 @@ function render(){
           <input type="checkbox" data-check="${esc(p.id)}" ${p.bought?"checked":""}></label></div>
         <div class="c-name">
           <div class="bd">${esc(p.brand)}${p.nick?`<span class="nick" data-nick="${esc(p.id)}" title="点这里改昵称">${esc(p.nick)}</span>`:`<span class="nick-add" data-nick="${esc(p.id)}" title="给这件加个昵称">＋ 昵称</span>`}${allOf?`<span class="must" title="${esc(ruleNote||"和同组其它型号一起买，不是二选一")}">都要买</span>`:""}</div>
-          <div class="nm">${esc(p.model)}</div>
+          <div class="nm">${esc(p.model)}<span class="qty-inline">×${p.qty}</span></div>
           ${p.note?`<div class="nt">${esc(p.note)}</div>`:""}
         </div>
         <div class="c-qty">×${p.qty}</div>
-        <div class="num cur ${p.bought?"bought-mark":""}" title="${esc(priceCellTitle(p)).replace(/\n/g,'&#10;')}">${money(p.price)}${quoteLines(p)}</div>
-        <div class="num jd ${p.jd==null?"fillable":""}" data-jd="${esc(p.id)}" title="${esc(jdCellTitle(p)).replace(/\n/g,'&#10;')}">${p.jd==null?"—":money(p.jd)}${hasParts(p)?`<span class="jd-split" title="京东按 ${p.jdParts.length} 件单品加总">${p.jdParts.length} 件合计</span>`:""}</div>
-        <div class="num">${cmpCell(p)}</div>
-        <div class="num low ${p.low==null?"dim":""}" ${p.hnote?`title="${esc(p.hnote)}"`:""}>${p.low==null?"—":(p.conf==="低"?"≈":"")+money(p.low)}</div>
-        <div class="num avg ${p.avg==null?"dim":""}" ${p.hnote?`title="${esc(p.hnote)}"`:""}>${p.avg==null?"—":(p.conf==="低"?"≈":"")+money(p.avg)}</div>
-        <div style="text-align:center"><span class="chip ${st.k}" title="${esc(st.tip + (p.hnote ? " · " + p.hnote : ""))}">${st.label}</span></div>
-        <div class="c-spark"><button class="sp" data-chart="${esc(p.id)}" title="价格走势">${sparkSVG(p.id)}</button></div>
+        <div class="num cur${p.bought?" bought-mark":""}" title="${esc(priceCellTitle(p)).replace(/\n/g,'&#10;')}"><span class="plbl">淘宝价</span><span class="pval">${money(p.price)}</span>${quoteLines(p)}</div>
+        <div class="num jd${p.jd==null?" fillable":""}" data-jd="${esc(p.id)}" title="${esc(jdCellTitle(p)).replace(/\n/g,'&#10;')}"><span class="plbl">京东价</span><span class="pval">${p.jd==null?"—":money(p.jd)}${hasParts(p)?`<span class="jd-split" title="京东按 ${p.jdParts.length} 件单品加总">${p.jdParts.length} 件合计</span>`:""}</span></div>
+        <div class="num"><span class="plbl">差价</span><span class="pval">${cmpCell(p)}</span></div>
+        <div class="num low${p.low==null?" dim":""}" ${p.hnote?`title="${esc(p.hnote)}"`:""}><span class="plbl">6 个月最低</span><span class="pval">${p.low==null?"—":(p.conf==="低"?"≈":"")+money(p.low)}</span></div>
+        <div class="num avg${p.avg==null?" dim":""}" ${p.hnote?`title="${esc(p.hnote)}"`:""}><span class="plbl">6 个月均价</span><span class="pval">${p.avg==null?"—":(p.conf==="低"?"≈":"")+money(p.avg)}</span></div>
+        <div class="pstat"><span class="plbl">状态</span><span class="pval"><span class="chip ${st.k}" title="${esc(st.tip + (p.hnote ? " · " + p.hnote : ""))}">${st.label}</span></span></div>
         <div class="c-act">
           <button class="ico" data-edit="${esc(p.id)}" title="编辑">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11.3 2.3l2.4 2.4L5 13.4l-3.2.8.8-3.2 8.7-8.7z"/></svg>
@@ -1665,12 +2228,14 @@ function renderBuildDetail(picks, build){
     const tag = allOf ? `<em title="${esc(note||"两种不同部件，都要买")}">${n} 件全要</em>`
              : starred ? `<em class="star-tag" title="这个类目点过星，结算按这件算，哪怕有更便宜的">★ 已点星</em>`
              : (n>1 ? `<em>${n} 选 1</em>` : `<em>唯一</em>`);
-    return `<div class="bd-row${p.bought?" got":""}">
-      <span class="bd-cat"><i style="background:${color(cat)}"></i>${esc(cat)}${tag}</span>
-      <span class="bd-name" title="${esc(p.brand + " " + p.model)}">${esc(p.brand)} ${esc(p.model)}${p.nick?`<span class="n">${esc(p.nick)}</span>`:""}${p.bought?`<span class="got-tag">已购</span>`:""}</span>
-      <span class="bd-src ${src==="京东"?"jd":"tb"}">${src}</span>
-      <span class="bd-qty">${p.qty>1?"×"+p.qty:""}</span>
-      <span class="bd-price">${money(bestSubtotal(p))}</span>
+    const srcTag = `<span class="bd-src ${src==="京东"?"jd":"tb"}">${src}</span>`;
+    return `<div class="bd-card${p.bought?" got":""}">
+      <div class="bd-card-top">
+        <span class="bd-cat"><i style="background:${color(cat)}"></i>${esc(cat)}${tag}${srcTag}</span>
+        <span class="bd-price">${money(bestSubtotal(p))}</span>
+      </div>
+      <div class="bd-name" title="${esc(p.brand + " " + p.model)}">${esc(p.brand)} ${esc(p.model)}${p.nick?`<span class="n">${esc(p.nick)}</span>`:""}${p.bought?`<span class="got-tag">已购</span>`:""}</div>
+      ${p.qty>1?`<div class="bd-card-bot"><span class="bd-qty">×${p.qty}</span></div>`:""}
     </div>`;
   }).join("");
   const el = document.getElementById("bdList");
@@ -1737,7 +2302,13 @@ document.getElementById("list").addEventListener("change", e=>{
 
 document.getElementById("list").addEventListener("click", e=>{
   const ch = e.target.closest("[data-chart]");
-  if(ch){ openChart(ch.getAttribute("data-chart")); return; }
+  if(ch){
+    const id = ch.getAttribute("data-chart");
+    if(window.matchMedia("(max-width:760px)").matches){
+      trCurrent = id; showPage("trend"); drawTrend(id);
+    }else openChart(id);
+    return;
+  }
   const nk = e.target.closest("[data-nick]");
   if(nk){ openForm(nk.getAttribute("data-nick"), "fNick"); return; }
   const sr = e.target.closest("[data-star]");
@@ -1983,7 +2554,7 @@ document.getElementById("btnSave").addEventListener("click", ()=>{
     p = {id: "p-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), cat, brand, model, nick, qty, price, low, avg, note, jd, quotes, bought:false, userEdit:[], jdParts:[], jdMode:"sum"};
     S.products.push(p);
   }
-  if(writeHist) addHistory(p.id, TODAY, price);
+  if(writeHist) addHistory(p.id, TODAY, price, (jd!=null && jd>0) ? jd : null);
   S.updatedAt = TODAY;
   save(); closeM("ovlForm"); render();
   syncNow(false);
@@ -2008,10 +2579,17 @@ document.getElementById("btnDel").addEventListener("click", ()=>{
   if(deleteProduct(id)) closeM("ovlForm");   // 和行尾垃圾桶走同一套：确认、回收站、写回源文件
 });
 
-function addHistory(id, d, price){
+function addHistory(id, d, price, jd){
   const arr = S.history[id] || (S.history[id]=[]);
   const i = arr.findIndex(x=>x.d===d);
-  if(i>=0) arr[i].p = price; else arr.push({d, p:price});
+  if(i>=0){
+    arr[i].p = price;
+    if(jd!=null) arr[i].j = jd;   // 京东历史：有就更新，没查到就留原来那条
+  }else{
+    const pt = {d, p:price};
+    if(jd!=null) pt.j = jd;
+    arr.push(pt);
+  }
   arr.sort((a,b)=> a.d<b.d?-1:1);
 }
 
@@ -2032,51 +2610,54 @@ function openChart(id){
   openM("ovlChart");
 }
 
+/* 趋势页专用：淘宝 / 京东两条线，低饱和柔软配色 */
 function chartSVG(h, p){
-  const W=740, H=260, L=58, R=64, T=18, B=32;
-  const vals = h.map(x=>x.p).concat([p.low, p.avg].filter(v=>v!=null));
+  const W=740, H=270, L=60, R=66, T=18, B=34;
+  const tbPts = h.filter(x=> x.p!=null);
+  const jdPts = h.filter(x=> x.j!=null);
+  const vals = tbPts.map(x=>x.p).concat(jdPts.map(x=>x.j))
+    .concat([p.low, p.avg].filter(v=>v!=null));
+  if(!vals.length) return '<p style="color:#A69D8E;font-size:13px;padding:14px">这件还没有价格记录。</p>';
   let lo = Math.min(...vals), hi = Math.max(...vals);
-  if(hi===lo){ hi=lo*1.02; lo=lo*0.98; }
-  const pad = (hi-lo)*0.12; lo-=pad; hi+=pad;
-  const x = i => L + i*(W-L-R)/Math.max(1,h.length-1);
+  if(hi===lo){ hi = lo*1.03 + 1; lo = Math.max(0, lo*0.97 - 1); }
+  const pad = (hi-lo)*0.14; lo = Math.max(0, lo-pad); hi += pad;
+  const x = d => L + (h.findIndex(z=>z.d===d))*(W-L-R)/Math.max(1,h.length-1);
   const y = v => T + (hi-v)*(H-T-B)/(hi-lo);
-  const pts = h.map((pt,i)=> x(i).toFixed(1)+","+y(pt.p).toFixed(1)).join(" ");
-  const area = `M ${x(0).toFixed(1)} ${(H-B).toFixed(1)} L ` + h.map((pt,i)=>`${x(i).toFixed(1)} ${y(pt.p).toFixed(1)}`).join(" L ") + ` L ${x(h.length-1).toFixed(1)} ${(H-B).toFixed(1)} Z`;
-
   let g = "";
   for(let i=0;i<=4;i++){
     const v = lo + (hi-lo)*i/4, yy = y(v);
-    g += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="#EDE7DD" stroke-width="1"/>
-          <text x="${L-10}" y="${(yy+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="#9A928A">${money(Math.round(v))}</text>`;
+    g += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="rgba(120,108,88,.16)" stroke-width="1"/>
+          <text x="${L-10}" y="${(yy+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="#A69D8E">${money(Math.round(v))}</text>`;
   }
   let refs = "";
   if(p.avg!=null){
-    const yy = y(p.avg);
-    refs += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="#C0AF8C" stroke-width="1.2" stroke-dasharray="5 4"/>
-             <text x="${W-R+8}" y="${(yy+4).toFixed(1)}" font-size="10.5" fill="#A08F6C">均价</text>`;
+    const yy=y(p.avg);
+    refs += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="rgba(167,156,134,.7)" stroke-width="1.2" stroke-dasharray="5 4"/>
+             <text x="${W-R+8}" y="${(yy+4).toFixed(1)}" font-size="10" fill="#A79C86">均价</text>`;
   }
   if(p.low!=null){
-    const yy = y(p.low);
-    refs += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="#9DAE9C" stroke-width="1.2" stroke-dasharray="2 3"/>
-             <text x="${W-R+8}" y="${(yy+4).toFixed(1)}" font-size="10.5" fill="#6F856F">最低</text>`;
+    const yy=y(p.low);
+    refs += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="rgba(133,155,126,.65)" stroke-width="1.2" stroke-dasharray="2 3"/>
+             <text x="${W-R+8}" y="${(yy+4).toFixed(1)}" font-size="10" fill="#71856A">最低</text>`;
   }
-  const step = Math.ceil(h.length/7);
-  let labels = "";
+  const step = Math.max(1, Math.ceil(h.length/7));
+  let labels="";
   h.forEach((pt,i)=>{
-    if(i%step===0 || i===h.length-1){
-      labels += `<text x="${x(i).toFixed(1)}" y="${H-10}" text-anchor="middle" font-size="10.5" fill="#9A928A">${esc(pt.d.slice(5))}</text>`;
-    }
+    if(i%step===0 || i===h.length-1)
+      labels += `<text x="${x(pt.d).toFixed(1)}" y="${H-10}" text-anchor="middle" font-size="10" fill="#A69D8E">${esc(pt.d.slice(5))}</text>`;
   });
-  const dots = h.map((pt,i)=> `<circle cx="${x(i).toFixed(1)}" cy="${y(pt.p).toFixed(1)}" r="2.8" fill="#FBF9F5" stroke="#7F947F" stroke-width="1.6"><title>${esc(pt.d)} · ${money(pt.p)}</title></circle>`).join("");
-
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px">
-    ${g}
-    <path d="${area}" fill="rgba(157,174,156,.10)" stroke="none"/>
-    ${refs}
-    <polyline points="${pts}" fill="none" stroke="#8FA391" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-    ${dots}${labels}
+  const dots=(pts,col)=> pts.map(pt=>`<circle cx="${x(pt.d).toFixed(1)}" cy="${y(pts===jdPts?pt.j:pt.p).toFixed(1)}" r="3" fill="#FBF8F1" stroke="${col}" stroke-width="1.8">
+    <title>${esc(pt.d)} · ${money(pts===jdPts?pt.j:pt.p)}</title></circle>`).join("");
+  const line=(pts,col)=> pts.length<2 ? "" :
+    `<polyline points="${pts.map(z=>x(z.d).toFixed(1)+","+y(pts===jdPts?z.j:z.p).toFixed(1)).join(" ")}" fill="none" stroke="${col}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="淘宝和京东价格趋势">
+    ${g}${refs}
+    ${line(tbPts,"#C08457")}${line(jdPts,"#B06A62")}
+    ${dots(tbPts,"#C08457")}${dots(jdPts,"#B06A62")}
+    ${labels}
   </svg>`;
 }
+
 
 /* ---------- import ---------- */
 document.getElementById("btnImport").addEventListener("click", ()=> openM("ovlImport"));
@@ -2110,7 +2691,7 @@ function applyImport(data){
     const p = S.products.find(x=>x.id===id);
     const v = Number(price);
     if(!p || isNaN(v)){ if(!p) miss.push(id); return; }
-    p.price = v; addHistory(p.id, date, v); n++;
+    p.price = v; n++;
     // 京东价：普通数字照旧；拆件套餐允许给两个单品价（数组或 {parts:[...]}），自动加总
     if(data.jd && data.jd[id]!=null){
       const raw = data.jd[id];
@@ -2130,6 +2711,8 @@ function applyImport(data){
         p.jd = Number(raw);
       }
     }
+    // 淘宝 / 京东同一天一起进历史，趋势页两条线才对得上日期
+    addHistory(p.id, date, v, (p.jd!=null && p.jd>0) ? p.jd : null);
     if(data.low && data.low[id]!=null) p.low = Number(data.low[id]);
     if(data.avg && data.avg[id]!=null) p.avg = Number(data.avg[id]);
   });
@@ -2235,7 +2818,8 @@ document.getElementById("cfClear").addEventListener("click", ()=>{
   if(b){ b.classList.remove("offline","saved"); b.textContent = saveLabel(); }
   toast("已清除本机云端设置");
 });
-document.getElementById("btnHelp").addEventListener("click", ()=>{ fillCloudForm(); openM("ovlHelp"); });
+const _btnHelp=document.getElementById("btnHelp");
+if(_btnHelp) _btnHelp.addEventListener("click", ()=>{ fillCloudForm(); openM("ovlHelp"); });
 document.getElementById("btnReset").addEventListener("click", ()=>{
   if(!confirm("清空本浏览器缓存，重新从源文件载入？已写回源文件的内容不受影响。")) return;
   localStorage.removeItem(KEY);
@@ -2325,21 +2909,86 @@ if("serviceWorker" in navigator && (location.protocol === "http:" || location.pr
   navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
 
-/* 底部标签栏：复用已有功能，不引入新逻辑。
-   汇总 / 清单是滚动定位，添加 / 说明 / 我的分别唤起已有弹窗。 */
+/* ---------- 我的页：把说明框的内容搬进来，按 h4 切成一张张卡片 ---------- */
+(function(){
+  const src = document.querySelector("#ovlHelp .help");
+  const dst = document.getElementById("meHelp");
+  if(!src || !dst) return;
+  const nodes = [...src.children];
+  let buf = [];
+  const flush = ()=>{
+    if(!buf.length) return;
+    const sec = document.createElement("section");
+    buf.forEach(n=> sec.appendChild(n)); dst.appendChild(sec); buf = [];
+  };
+  nodes.forEach(n=>{
+    if(n.tagName === "H4"){ flush(); buf.push(n); }
+    else buf.push(n);
+  });
+  flush();
+  const reset = document.getElementById("btnReset");
+  const foot = document.getElementById("meFoot");
+  if(reset && foot){ reset.style.color="#9A6238"; foot.appendChild(reset); }
+  fillCloudForm();
+})();
+
+/* ---------- 四页抽屉式切换 ---------- */
+let curPage = "home";
+function showPage(tab){
+  const to = document.getElementById("page-" + tab);
+  if(!to || tab === curPage){ if(to) window.scrollTo({top:0,behavior:"smooth"}); return; }
+  const from = document.getElementById("page-" + curPage);
+  if(from){
+    from.classList.add("leaving");
+    setTimeout(()=>{ from.classList.remove("on","leaving"); }, 210);
+  }
+  to.classList.remove("leaving");
+  to.classList.add("on");
+  curPage = tab;
+  window.scrollTo({top:0,behavior:"auto"});
+  [...document.querySelectorAll("#tabbar button")].forEach(b=>
+    b.classList.toggle("on", b.getAttribute("data-tab")===tab));
+  if(tab==="trend") renderTrend();
+  if(tab==="me") fillCloudForm();
+}
 (function(){
   const bar = document.getElementById("tabbar");
   if(!bar) return;
   bar.addEventListener("click", e=>{
     const btn = e.target.closest("button[data-tab]");
-    if(!btn) return;
-    const tab = btn.getAttribute("data-tab");
-    [...bar.querySelectorAll("button")].forEach(b=> b.classList.toggle("on", b===btn));
-    if(tab==="home"){ window.scrollTo({top:0,behavior:"smooth"}); }
-    else if(tab==="list"){ const el=document.getElementById("list"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); }
-    else if(tab==="add"){ openForm(null); }
-    else if(tab==="me"){ openM("ovlHelp"); }
+    if(btn) showPage(btn.getAttribute("data-tab"));
   });
+})();
+
+/* ---------- 趋势筛选事件（此前误插入 CSS，已移回脚本） ---------- */
+document.addEventListener("change", function(e){
+  if(e.target && e.target.id==="trPick"){ trCurrent = e.target.value; drawTrend(trCurrent); }
+});
+document.addEventListener("click", function(e){
+  const b = e.target.closest("[data-tfb]");
+  if(!b) return;
+  const v = b.getAttribute("data-tfb");
+  if(v==="__all__") TRFILTER.cats.clear();
+  else if(TRFILTER.cats.has(v)) TRFILTER.cats.delete(v);
+  else TRFILTER.cats.add(v);
+  renderTrend();
+});
+document.addEventListener("click", function(e){
+  if(e.target && e.target.id==="trClear"){ TRFILTER.cats.clear(); renderTrend(); }
+});
+
+/* ---------- 冻结筛选器：top 精确等于顶栏实高，消除"缝" ---------- */
+(function(){
+  function syncStickyTop(){
+    const tb = document.querySelector(".topbar");
+    if(!tb) return;
+    const h = Math.round(tb.getBoundingClientRect().height);
+    if(h>0) document.documentElement.style.setProperty("--sticky-top", h + "px");
+  }
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", syncStickyTop);
+  else syncStickyTop();
+  window.addEventListener("load", syncStickyTop);
+  window.addEventListener("resize", syncStickyTop);
 })();
 </script>
 </body>
