@@ -27,7 +27,7 @@
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:linear-gradient(160deg,#C3D2E7 0%,#D5E0F0 46%,#C9D6E8 100%);
-  background-attachment:fixed;min-height:100vh;color:var(--ink);
+  min-height:100vh;color:var(--ink);
   font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
   -webkit-font-smoothing:antialiased;
 }
@@ -508,7 +508,6 @@ body{
   background:radial-gradient(900px 520px at 12% -8%,#F4EFE5 0%,transparent 62%),
              radial-gradient(760px 520px at 92% 8%,#DED6C6 0%,transparent 58%),
              linear-gradient(168deg,#EAE4D8 0%,#E3DCCE 52%,#E8E2D5 100%);
-  background-attachment:fixed;
 }
 .topbar{
   background:rgba(231,225,213,.80);
@@ -572,15 +571,13 @@ body{
 .chartbox .hlist span,.hlist span{background:rgba(255,255,255,.55);border-color:var(--line-soft);color:var(--ink-2)}
 .toast{background:rgba(42,39,35,.94);color:#F4EEE3;border:1px solid rgba(255,255,255,.12)}
 
-/* ---------- 四页切换：抽屉式 ---------- */
+/* ---------- 四页切换：直接换页，不做任何动画 ----------
+   iOS Safari 上透明度/transform 动画与 backdrop-filter、fixed 背景叠加会闪黑屏。
+   稳定性优先：切页瞬间完成，不引入中间合成层。 */
 .pages{position:relative}
 .page{display:none}
-.page.on{display:block;animation:drawerIn .34s cubic-bezier(.22,1,.36,1) both}
-@keyframes drawerIn{from{opacity:0;transform:translate3d(26px,0,0) scale(.985)}
-  to{opacity:1;transform:none}}
-.page.leaving{display:block;animation:drawerOut .22s ease both;pointer-events:none}
-@keyframes drawerOut{to{opacity:0;transform:translate3d(-16px,0,0)}}
-@media (prefers-reduced-motion:reduce){.page.on,.page.leaving{animation:none}}
+.page.on{display:block}
+.page.leaving{display:none}
 
 /* 清单页：筛选器冻结在顶部 */
 #page-list .filterbar{position:sticky;top:76px;z-index:22}
@@ -748,7 +745,6 @@ body{
     radial-gradient(900px 560px at 100% 4%,rgba(237,231,220,.62) 0%,transparent 58%),
     radial-gradient(760px 620px at 50% 100%,rgba(214,199,178,.42) 0%,transparent 62%),
     linear-gradient(170deg,#EDE7DC 0%,#E4DDCF 48%,#E9E2D6 100%);
-  background-attachment:fixed;
 }
 .card,.group,.filterbar,.empty,.bd-panel,.trash-panel,.bd-card{
   background:var(--paper);
@@ -1328,7 +1324,7 @@ body{
 const SEED = {
   "updatedAt": "",
   "lastImport": "2026-11-13",
-  "builtAt": "2026-11-16 20:12",
+  "builtAt": "2026-11-16 20:22",
   "rev": 0,
   "deleted": [],
   "stars": [],
@@ -2938,11 +2934,8 @@ function showPage(tab){
   const to = document.getElementById("page-" + tab);
   if(!to || tab === curPage){ if(to) window.scrollTo({top:0,behavior:"smooth"}); return; }
   const from = document.getElementById("page-" + curPage);
-  if(from){
-    from.classList.add("leaving");
-    setTimeout(()=>{ from.classList.remove("on","leaving"); }, 210);
-  }
-  to.classList.remove("leaving");
+  if(from) from.classList.remove("on","leaving","switching");
+  to.classList.remove("leaving","switching");
   to.classList.add("on");
   curPage = tab;
   window.scrollTo({top:0,behavior:"auto"});
