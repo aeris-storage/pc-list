@@ -196,6 +196,12 @@ button{font:inherit}
 /* 拆件套餐：京东把 CPU 和主板分开卖，这一格显示两件加总 */
 .jd-split{display:inline-block;margin-left:5px;padding:0 5px;border-radius:5px;background:#E1F3EA;
   color:#1F7A55;font-size:9.5px;font-weight:600;letter-spacing:.02em;vertical-align:1px;white-space:nowrap}
+/* 涨跌小 Tag：只对比本次导入与上一次，涨红（不友好）降绿（友好），持平不显示 */
+.mv{display:inline-block;margin-left:5px;padding:1px 5px;border-radius:5px;
+  font-size:9.5px;font-weight:600;line-height:1.3;vertical-align:1px;
+  letter-spacing:0;white-space:nowrap;cursor:help}
+.mv.up{background:#FBE4E0;color:#B4472F}
+.mv.down{background:#E1F3EA;color:#1F7A55}
 /* 多店报价：同一件商品在淘宝 / 天猫别家店的价，只作参考，不参与结算 */
 .qline{font-size:10.5px;color:var(--ink-3);line-height:1.45;margin-top:2px;white-space:normal;
   word-break:break-word}
@@ -1323,8 +1329,8 @@ body{
 <script>
 const SEED = {
   "updatedAt": "",
-  "lastImport": "2026-11-13",
-  "builtAt": "2026-11-16 20:22",
+  "lastImport": "2026-11-18",
+  "builtAt": "2026-11-18 01:59",
   "rev": 0,
   "deleted": [],
   "stars": [],
@@ -1349,7 +1355,7 @@ const SEED = {
   "restored": [],
   "trash": []
 };
-const TODAY = "2026-11-16";
+const TODAY = "2026-11-18";
 const KEY = "pcbuild.v2";
 
 const CAT_COLOR = {
@@ -1861,6 +1867,34 @@ function histOf(id){
   const h = S.history[id] || [];
   return h.slice().sort((a,b)=> a.d < b.d ? -1 : 1);
 }
+/* 涨跌小 Tag：只对比「本次导入」与「上一次」。
+   key: p=淘宝 / j=京东。返回 {up,diff} 或 null。
+   - 只有最新导入日期(=lastImport)那一点同时带了本渠道价，才计算；
+   - 上一次 = 最新点之前、最近一个有该渠道价的点；
+   - 持平/无上次/本次无价 → null（什么都不显示）。 */
+function moveOf(id, key){
+  const h = histOf(id);
+  if(!h.length) return null;
+  const last = h[h.length-1];
+  if(!S.lastImport || last.d !== S.lastImport) return null;  // 最新点不是本次导入，不显示
+  const cur = last[key];
+  if(typeof cur !== "number") return null;                    // 本次没抓到这个渠道的价
+  let prev = null;
+  for(let i=h.length-2;i>=0;i--){
+    if(typeof h[i][key] === "number"){ prev = h[i][key]; break; }
+  }
+  if(prev==null) return null;
+  const diff = Math.round((cur-prev)*100)/100;
+  if(Math.abs(diff) < 0.005) return null;                     // 持平不显示
+  return { up: diff>0, diff: Math.abs(diff), prev, cur };
+}
+function moveTag(id, key){
+  const m = moveOf(id, key);
+  if(!m) return "";
+  const arrow = m.up ? "↑" : "↓";
+  const word = m.up ? "涨" : "降";
+  return `<span class="mv ${m.up?"up":"down"}" title="上次 ${money(m.prev)} → 本次 ${money(m.cur)}，${m.up?"涨":"降"} ${money(m.diff)}">${arrow}${word} ${money(m.diff)}</span>`;
+}
 function sparkSVG(id){
   const h = histOf(id);
   if(h.length < 2) return '<span style="color:#C6BFB5;font-size:12px">—</span>';
@@ -2003,8 +2037,8 @@ function render(){
           ${p.note?`<div class="nt">${esc(p.note)}</div>`:""}
         </div>
         <div class="c-qty">×${p.qty}</div>
-        <div class="num cur${p.bought?" bought-mark":""}" title="${esc(priceCellTitle(p)).replace(/\n/g,'&#10;')}"><span class="plbl">淘宝价</span><span class="pval">${money(p.price)}</span>${quoteLines(p)}</div>
-        <div class="num jd${p.jd==null?" fillable":""}" data-jd="${esc(p.id)}" title="${esc(jdCellTitle(p)).replace(/\n/g,'&#10;')}"><span class="plbl">京东价</span><span class="pval">${p.jd==null?"—":money(p.jd)}${hasParts(p)?`<span class="jd-split" title="京东按 ${p.jdParts.length} 件单品加总">${p.jdParts.length} 件合计</span>`:""}</span></div>
+        <div class="num cur${p.bought?" bought-mark":""}" title="${esc(priceCellTitle(p)).replace(/\n/g,'&#10;')}"><span class="plbl">淘宝价</span><span class="pval">${money(p.price)}${moveTag(p.id,"p")}</span>${quoteLines(p)}</div>
+        <div class="num jd${p.jd==null?" fillable":""}" data-jd="${esc(p.id)}" title="${esc(jdCellTitle(p)).replace(/\n/g,'&#10;')}"><span class="plbl">京东价</span><span class="pval">${p.jd==null?"—":money(p.jd)}${moveTag(p.id,"j")}${hasParts(p)?`<span class="jd-split" title="京东按 ${p.jdParts.length} 件单品加总">${p.jdParts.length} 件合计</span>`:""}</span></div>
         <div class="num"><span class="plbl">差价</span><span class="pval">${cmpCell(p)}</span></div>
         <div class="num low${p.low==null?" dim":""}" ${p.hnote?`title="${esc(p.hnote)}"`:""}><span class="plbl">6 个月最低</span><span class="pval">${p.low==null?"—":(p.conf==="低"?"≈":"")+money(p.low)}</span></div>
         <div class="num avg${p.avg==null?" dim":""}" ${p.hnote?`title="${esc(p.hnote)}"`:""}><span class="plbl">6 个月均价</span><span class="pval">${p.avg==null?"—":(p.conf==="低"?"≈":"")+money(p.avg)}</span></div>
