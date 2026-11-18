@@ -2,22 +2,13 @@
    让主屏幕图标在没网 / 电脑合盖时也能打开，看到上次联网的页面快照。
    商品数据在私有仓库，通过 API 现取，不缓存在这里，避免换设备看到旧数据。
    路径全部用相对根目录 scope，兼容 /仓库名/ 这种子目录站点。 */
-const CACHE = "zhuangji-v3";
+const CACHE = "zhuangji-v2";
 const HOME = new URL("./", self.registration.scope).href;
-/* OCR 静态资源：随页面一起装进缓存，保证离线也能认字。
-   大文件单独缓存，失败不影响页面安装。 */
-const OCR_ASSETS = [
-  "ocr/tesseract.min.js",
-  "ocr/worker.min.js",
-  "ocr/tesseract-core-simd-lstm.wasm.js",
-  "ocr/tesseract-core-lstm.wasm.js",
-  "ocr/lang/chi_sim.traineddata.gz"
-].map(p => new URL(p, self.registration.scope).href);
 
 self.addEventListener("install", e => {
   e.waitUntil(
     caches.open(CACHE)
-      .then(c => c.add(HOME).then(() => Promise.allSettled(OCR_ASSETS.map(u => c.add(u)))))
+      .then(c => c.add(HOME))
       .then(() => self.skipWaiting())
   );
 });
