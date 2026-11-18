@@ -330,6 +330,8 @@ button{font:inherit}
 .trash-panel{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line-soft)}
 .trash-panel.on{display:block}
 .trash-empty{font-size:11.5px;color:var(--ink-3);padding:2px 0 8px}
+.trash-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;font-size:11.5px;color:var(--ink-3);padding:2px 0 8px}
+.trash-head .btn{flex:none;white-space:nowrap}
 .trash-row{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12px;color:var(--ink-2);
   border-top:1px solid var(--line-soft)}
 .trash-row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1390,7 +1392,7 @@ body{
 const SEED = {
   "updatedAt": "",
   "lastImport": "2026-11-18",
-  "builtAt": "2026-11-18 15:05",
+  "builtAt": "2026-11-18 15:21",
   "rev": 0,
   "deleted": [],
   "stars": [],
@@ -2190,7 +2192,8 @@ function renderTrash(){
   const box = document.getElementById("trashPanel");
   if(!box) return;
   box.innerHTML = list.length
-    ? `<div class="trash-empty">这些商品已移出清单，点「恢复」放回去（含当时的价格历史）。这份记录只留在本浏览器。</div>` +
+    ? `<div class="trash-head"><span>这些商品已移出清单，点「恢复」放回去（含当时的价格历史）。这份记录只留在本浏览器。</span>
+         <button class="btn ghost sm" data-trash-close title="收起">收起 ×</button></div>` +
       list.map(x=>`<div class="trash-row">
         <span class="nm" title="${esc(x.p.brand+" "+x.p.model)}">${esc(x.p.brand)} ${esc(x.p.model)}</span>
         <span style="font-size:11px;color:var(--ink-3);white-space:nowrap">${esc(x.p.cat)} · ${esc(x.at||"")}</span>
@@ -2246,8 +2249,8 @@ function deleteProduct(id){
   S.deleted = [...new Set([...(S.deleted||[]), id])];
   S.restored = (S.restored||[]).filter(x=>x!==id);
   delete S.history[id];
-  save(); render(); toggleTrash(true);
-  toast("已删除 "+p.brand+" "+p.model+" · 可在「已删除」里恢复");
+  save(); render();
+  toast("已删除 "+p.brand+" "+p.model+" · 可在筛选栏「已删除」里恢复");
   return true;
 }
 function restoreProduct(id){
@@ -2446,6 +2449,8 @@ document.getElementById("fbClear").addEventListener("click", ()=>{
 });
 document.getElementById("btnTrash").addEventListener("click", ()=> toggleTrash());
 document.getElementById("trashPanel").addEventListener("click", e=>{
+  const c = e.target.closest("[data-trash-close]");
+  if(c){ toggleTrash(false); return; }
   const b = e.target.closest("[data-restore]");
   if(b) restoreProduct(b.getAttribute("data-restore"));
 });
