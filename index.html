@@ -277,15 +277,6 @@ button{font:inherit}
   border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;transition:.15s;width:100%}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#7FA6FF;background:#fff;box-shadow:0 0 0 3px rgba(143,163,145,.14)}
 .fld .hint{font-size:11px;color:var(--ink-3)}
-.ocrbox{background:rgba(143,163,145,.07);border:1px dashed rgba(143,163,145,.5);border-radius:12px;padding:11px 12px}
-.ocr-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
-.ocr-st{font-size:11.5px;color:var(--ink-3)}
-.ocr-st.ok{color:#547A55}
-.ocr-st.bad{color:#B96A33}
-.ocr-preview{margin-top:9px;max-height:130px;overflow:hidden;border-radius:9px;border:1px solid var(--line)}
-.ocr-preview img{display:block;width:100%;height:auto;object-fit:contain;background:#fff}
-.ocrbox textarea{margin-top:9px;font-size:13px;line-height:1.6;resize:vertical}
-.ocrbox textarea::placeholder{color:var(--ink-3)}
 .mfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
 .mfoot .left{margin-right:auto}
 
@@ -1140,16 +1131,6 @@ body{
       <button class="x" data-close>×</button>
     </div>
     <form id="form" class="grid2" autocomplete="off">
-      <div class="fld full ocrbox">
-        <label>从截图认字 <span class="hint">（选一张商品截图，本地识别，图片不上传；认出的字放下面框里，自己复制）</span></label>
-        <div class="ocr-row">
-          <button type="button" class="btn sm" id="btnOcrPick">选择截图</button>
-          <input type="file" id="fOcrFile" accept="image/*" style="display:none">
-          <span class="ocr-st" id="ocrStatus">识别引擎在页面第一次用时才加载，稍等几秒</span>
-        </div>
-        <div class="ocr-preview" id="ocrPreview" style="display:none"><img id="ocrImg" alt="截图预览"></div>
-        <textarea id="fOcrText" rows="4" placeholder="认出来的文字会出现在这里，选中复制即可；不会自动填到上面的输入框"></textarea>
-      </div>
       <div class="fld"><label>类目</label><input id="fCat" list="cats" placeholder="如：内存条" required><datalist id="cats"></datalist></div>
       <div class="fld"><label>品牌</label><input id="fBrand" placeholder="如：品牌名" required></div>
       <div class="fld full"><label>型号 / 规格 <span class="hint">（你手改过的字段会被锁住，以后文件更新不会覆盖）</span></label><input id="fModel" placeholder="如：型号名称 规格参数" required></div>
@@ -1392,7 +1373,7 @@ body{
 const SEED = {
   "updatedAt": "",
   "lastImport": "2026-11-18",
-  "builtAt": "2026-11-18 15:21",
+  "builtAt": "2026-11-18 17:22",
   "rev": 0,
   "deleted": [],
   "stars": [],
@@ -1418,7 +1399,6 @@ const SEED = {
   "trash": []
 };
 const TODAY = "2026-11-18";
-const OCR_BASE = "ocr/";
 const KEY = "pcbuild.v2";
 
 const CAT_COLOR = {
@@ -2572,64 +2552,6 @@ function openForm(id, focusId){
   openM("ovlForm");
   setTimeout(()=> document.getElementById(focusId || (p?"fPrice":"fCat")).focus(), 60);
 }
-
-/* ---------- 本地 OCR：选截图 → 认字 → 文字进框，不自动填字段、不上传图片 ---------- */
-let ocrWorker = null;              // worker 复用，认多张图不用重复加载引擎
-let ocrLoading = null;             // 首次加载 Promise，防止连点重复初始化
-function ocrSetStatus(msg, kind){
-  const el = document.getElementById("ocrStatus");
-  el.textContent = msg;
-  el.className = "ocr-st" + (kind ? " " + kind : "");
-}
-async function getOcrWorker(){
-  if(ocrWorker) return ocrWorker;
-  if(ocrLoading) return ocrLoading;
-  ocrLoading = (async ()=>{
-    ocrSetStatus("正在加载识别引擎，首次约几秒…");
-    if(typeof Tesseract === "undefined"){
-      await new Promise((resolve, reject)=>{
-        const s = document.createElement("script");
-        s.src = OCR_BASE + "tesseract.min.js";
-        s.onload = resolve;
-        s.onerror = ()=> reject(new Error("引擎脚本没找到，请确认 ocr 文件夹已一起放置"));
-        document.head.appendChild(s);
-      });
-    }
-    // worker 与 core 走本地目录；corePath 指向目录，worker 自己拼 wasm 文件名
-    const w = await Tesseract.createWorker("chi_sim", 1, {
-      workerPath: OCR_BASE + "worker.min.js",
-      corePath:   OCR_BASE,
-      langPath:   OCR_BASE + "lang"
-    });
-    ocrWorker = w;
-    return w;
-  })();
-  try { return await ocrLoading; }
-  catch(e){ ocrLoading = null; throw e; }
-}
-document.getElementById("btnOcrPick").addEventListener("click", ()=> document.getElementById("fOcrFile").click());
-document.getElementById("fOcrFile").addEventListener("change", async (ev)=>{
-  const file = ev.target.files && ev.target.files[0];
-  if(!file) return;
-  // 预览
-  const url = URL.createObjectURL(file);
-  const img = document.getElementById("ocrImg");
-  img.src = url;
-  document.getElementById("ocrPreview").style.display = "block";
-  ocrSetStatus("识别中…");
-  try {
-    const w = await getOcrWorker();
-    const { data } = await w.recognize(file, {}, { text: true });
-    const text = (data && data.text ? data.text : "").trim();
-    document.getElementById("fOcrText").value = text;
-    ocrSetStatus(text ? ("认出 " + text.replace(/\s+/g," ").length + " 个字，复制上面文字自己填") : "没认出字，换个更清楚的截图试试", text ? "ok" : "bad");
-  } catch(err){
-    ocrSetStatus("识别失败：" + (err && err.message ? err.message : "请稍后重试"), "bad");
-  } finally {
-    URL.revokeObjectURL(url);
-    ev.target.value = "";
-  }
-});
 
 /* 拆件区事件：只绑一次 */
 document.getElementById("fSplitRows").addEventListener("input", updateSplitSum);
