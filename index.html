@@ -277,6 +277,15 @@ button{font:inherit}
   border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;transition:.15s;width:100%}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:#7FA6FF;background:#fff;box-shadow:0 0 0 3px rgba(143,163,145,.14)}
 .fld .hint{font-size:11px;color:var(--ink-3)}
+.ocrbox{background:rgba(143,163,145,.07);border:1px dashed rgba(143,163,145,.5);border-radius:12px;padding:11px 12px}
+.ocr-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.ocr-st{font-size:11.5px;color:var(--ink-3)}
+.ocr-st.ok{color:#547A55}
+.ocr-st.bad{color:#B96A33}
+.ocr-preview{margin-top:9px;max-height:130px;overflow:hidden;border-radius:9px;border:1px solid var(--line)}
+.ocr-preview img{display:block;width:100%;height:auto;object-fit:contain;background:#fff}
+.ocrbox textarea{margin-top:9px;font-size:13px;line-height:1.6;resize:vertical}
+.ocrbox textarea::placeholder{color:var(--ink-3)}
 .mfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
 .mfoot .left{margin-right:auto}
 
@@ -506,7 +515,7 @@ button{font:inherit}
   --olive:#7C7E68; --sand:#A79C86; --sand-bg:rgba(167,156,134,.14);
   --clay:#B17D54; --clay-bg:rgba(196,140,94,.14);
   --na-bg:rgba(150,140,122,.12); --na-ink:#9A9082;
-  --charcoal:#302E2A; --tb:#C08457; --jd:#B06A62;
+  --charcoal:#302E2A; --tb:#F07820; --jd:#E12D2D;
   --r:24px;
 }
 html{background:var(--bg)}
@@ -614,6 +623,17 @@ body{
 .trend-hist span{font-size:11.5px;color:var(--ink-2);background:rgba(255,255,255,.55);
   border:1px solid var(--line-soft);border-radius:999px;padding:4px 10px;font-variant-numeric:tabular-nums}
 .trend-empty{padding:42px 20px;text-align:center;color:var(--ink-3);font-size:13px;line-height:1.8}
+/* 趋势：缩放控件 + 数据点气泡 */
+.trend-zoom{display:flex;align-items:center;gap:2px;margin-left:auto;
+  background:rgba(255,255,255,.55);border:1px solid var(--line-soft);border-radius:999px;padding:2px}
+.trend-zoom button{width:28px;height:26px;border:0;background:transparent;color:var(--ink-2);
+  font-size:16px;line-height:1;border-radius:999px;cursor:pointer;padding:0}
+.trend-zoom button:hover{background:rgba(255,255,255,.85)}
+.trend-zoom button:disabled{opacity:.32;cursor:default}
+.trend-zoom .zv{min-width:44px;text-align:center;font-size:11.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.trend-svg{overflow-x:auto;overflow-y:hidden}
+.trend-svg svg{display:block;width:calc(100% * var(--trz,1));height:auto}
+.hit{pointer-events:all;cursor:pointer}
 
 /* ---------- 我的页：说明按卡片分块 ---------- */
 #page-me .help{padding:0}
@@ -960,6 +980,39 @@ body{
 }
 .tabbar button.on{box-shadow:0 4px 12px rgba(48,46,42,.18)!important}
 
+/* ===== 冻结一体：大标题 + 四个按钮 + 筛选器 = 同一块，无缝同色 ===== */
+:root{ --freeze-bg:#EDE7DC }
+
+/* 顶栏：实色、无自身阴影，和筛选器同一块底色 */
+.topbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:30!important;
+  background:var(--freeze-bg)!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+/* 筛选器：top 精确贴住顶栏底边（去掉原来 +10px 的透明缝），同色无缝 */
+#page-list .filterbar,#page-trend .trend-filter{
+  position:sticky!important;
+  top:var(--sticky-top,104px)!important;
+  z-index:29!important;
+  margin:0 0 14px!important;
+  padding-top:12px!important;
+  background:var(--freeze-bg)!important;
+  border:0!important;
+  border-radius:0 0 16px 16px!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  box-shadow:0 8px 18px rgba(74,64,46,.10)!important;
+}
+/* 兜底：向上补 2px 同色，亚像素误差下也绝不透出滚动文字 */
+#page-list .filterbar::before,#page-trend .trend-filter::before{
+  content:"";position:absolute;left:0;right:0;top:-2px;height:2px;background:var(--freeze-bg)
+}
+/* 多图模式：每张图内部的历史条不再单独投影 */
+.trend-card .trend-hist{box-shadow:none!important}
+
 </style>
 </head>
 <body>
@@ -1060,16 +1113,13 @@ body{
     <div class="trend-pick card">
       <label>看哪一件</label>
       <select id="trPick" aria-label="选择商品"></select>
-    </div>
-    <div class="trend-card card">
-      <div class="th"><b id="trTitle">价格趋势</b><span id="trSub">—</span></div>
-      <div class="trend-svg" id="trBox"></div>
-      <div class="legend2" style="margin-top:11px">
-        <span><i class="i-tb"></i>淘宝 / 天猫</span><span><i class="i-jd"></i>京东</span>
-        <span id="trRef"></span>
+      <div class="trend-zoom" aria-label="图表缩放">
+        <button type="button" id="trZoomOut" title="缩小图表">−</button>
+        <span class="zv" id="trZoomVal">100%</span>
+        <button type="button" id="trZoomIn" title="放大图表">＋</button>
       </div>
     </div>
-    <div class="trend-hist card" id="trList"></div>
+    <div id="trCards"></div>
   </section>
 
   <!-- 我的页 -->
@@ -1088,6 +1138,16 @@ body{
       <button class="x" data-close>×</button>
     </div>
     <form id="form" class="grid2" autocomplete="off">
+      <div class="fld full ocrbox">
+        <label>从截图认字 <span class="hint">（选一张商品截图，本地识别，图片不上传；认出的字放下面框里，自己复制）</span></label>
+        <div class="ocr-row">
+          <button type="button" class="btn sm" id="btnOcrPick">选择截图</button>
+          <input type="file" id="fOcrFile" accept="image/*" style="display:none">
+          <span class="ocr-st" id="ocrStatus">识别引擎在页面第一次用时才加载，稍等几秒</span>
+        </div>
+        <div class="ocr-preview" id="ocrPreview" style="display:none"><img id="ocrImg" alt="截图预览"></div>
+        <textarea id="fOcrText" rows="4" placeholder="认出来的文字会出现在这里，选中复制即可；不会自动填到上面的输入框"></textarea>
+      </div>
       <div class="fld"><label>类目</label><input id="fCat" list="cats" placeholder="如：内存条" required><datalist id="cats"></datalist></div>
       <div class="fld"><label>品牌</label><input id="fBrand" placeholder="如：品牌名" required></div>
       <div class="fld full"><label>型号 / 规格 <span class="hint">（你手改过的字段会被锁住，以后文件更新不会覆盖）</span></label><input id="fModel" placeholder="如：型号名称 规格参数" required></div>
@@ -1330,7 +1390,7 @@ body{
 const SEED = {
   "updatedAt": "",
   "lastImport": "2026-11-18",
-  "builtAt": "2026-11-18 01:59",
+  "builtAt": "2026-11-18 15:05",
   "rev": 0,
   "deleted": [],
   "stars": [],
@@ -1356,6 +1416,7 @@ const SEED = {
   "trash": []
 };
 const TODAY = "2026-11-18";
+const OCR_BASE = "ocr/";
 const KEY = "pcbuild.v2";
 
 const CAT_COLOR = {
@@ -1912,9 +1973,12 @@ function sparkSVG(id){
 }
 
 /* ---------- 趋势页 ---------- */
-let trCurrent = null;
+/* trCurrent：副筛选「看哪一件」；"__all__" 或 null = 显示当前筛选范围内的全部商品 */
+let trCurrent = "__all__";
 const TRFILTER = { cats:new Set() };
 function trendPool(){ return S.products.filter(p=> histOf(p.id).length>0); }
+/* 当前主筛选（类目 chips）下的商品范围 */
+function trendScope(){ const pool=trendPool(); return TRFILTER.cats.size ? pool.filter(p=>TRFILTER.cats.has(p.cat)) : pool; }
 function renderTrendChips(){
   const box = document.getElementById("trChips");
   if(!box) return;
@@ -1931,37 +1995,46 @@ function renderTrend(){
   const sel = document.getElementById("trPick");
   if(!sel) return;
   renderTrendChips();
-  const pool = trendPool();
-  const withHist = TRFILTER.cats.size ? pool.filter(p=>TRFILTER.cats.has(p.cat)) : pool;
-  sel.innerHTML = withHist.length
-    ? withHist.map(p=>`<option value="${esc(p.id)}">${esc(p.cat)} · ${esc(p.brand)} ${esc(p.model)}</option>`).join("")
-    : '<option value="">（这个筛选下没有价格历史）</option>';
-  const wanted = trCurrent && withHist.some(p=>p.id===trCurrent) ? trCurrent : (withHist[0]&&withHist[0].id);
-  if(wanted){ sel.value = wanted; trCurrent = wanted; }
-  drawTrend(wanted);
+  const scope = trendScope();
+  // 下拉第一项固定「全部」，选中它显示范围内所有折线
+  const opts = [`<option value="__all__">全部（${scope.length} 件）</option>`]
+    .concat(scope.map(p=>`<option value="${esc(p.id)}">${esc(p.cat)} · ${esc(p.brand)} ${esc(p.model)}</option>`));
+  sel.innerHTML = scope.length ? opts.join("") : '<option value="__all__">（这个筛选下没有价格历史）</option>';
+  // 若当前副筛选已不在范围内，退回「全部」
+  if(trCurrent!=="__all__" && !scope.some(p=>p.id===trCurrent)) trCurrent="__all__";
+  sel.value = trCurrent;
+  drawTrend();
 }
-function drawTrend(id){
-  const t=document.getElementById("trTitle"), sub=document.getElementById("trSub"),
-        box=document.getElementById("trBox"), list=document.getElementById("trList"),
-        ref=document.getElementById("trRef");
-  const p = S.products.find(x=>x.id===id);
-  if(!p){
-    if(t) t.textContent="价格趋势";
-    if(sub) sub.textContent="";
-    if(box) box.innerHTML='<div class="trend-empty">还没有价格历史。手机或电脑上编辑商品时勾上「写入今天」，攒到两天就能画出线。</div>';
-    if(list) list.innerHTML="";
-    if(ref) ref.textContent="";
-    return;
-  }
-  const h = histOf(id);
-  if(t) t.textContent = p.nick ? `${p.brand} ${p.nick}` : `${p.brand} ${p.model}`;
-  if(sub) sub.textContent = `${p.cat} · 当前淘宝 ${money(p.price)}${p.jd!=null?" · 京东 "+money(p.jd):""} · ${h.length} 个价格点`;
-  if(box) box.innerHTML = h.length<2
+/* 单件折线卡片 */
+function trendCardHTML(p){
+  const h = histOf(p.id);
+  const title = p.nick ? `${p.brand} ${p.nick}` : `${p.brand} ${p.model}`;
+  const sub = `${p.cat} · ${h.length} 个价格点 · 点图上圆点看当天价`;
+  const chart = h.length<2
     ? '<div class="trend-empty">只有 1 天价格，攒到第 2 天就能画线了。<br>淘宝历史 '+h.length+' 点 · 京东历史 '+h.filter(x=>x.j!=null).length+' 点</div>'
     : chartSVG(h,p);
-  if(list) list.innerHTML = h.slice().reverse().map(x=>
-    `<span>${esc(x.d)} · 淘宝 ${money(x.p)}${x.j!=null?" · 京东 "+money(x.j):""}</span>`).join("");
-  if(ref) ref.textContent = [p.low!=null?"最低 "+money(p.low):"", p.avg!=null?"均价 "+money(p.avg):""].filter(Boolean).join(" · ");
+  const ref = [p.low!=null?"最低 "+money(p.low):"", p.avg!=null?"均价 "+money(p.avg):""].filter(Boolean).join(" · ");
+  return `<div class="trend-card card">
+    <div class="th"><b>${esc(title)}</b><span>${esc(sub)}</span></div>
+    <div class="trend-svg">${chart}</div>
+    <div class="legend2" style="margin-top:11px">
+      <span><i class="i-tb"></i>淘宝 / 天猫</span><span><i class="i-jd"></i>京东</span>
+      <span>${esc(ref)}</span>
+    </div>
+  </div>`;
+}
+function drawTrend(){
+  const box = document.getElementById("trCards");
+  if(!box) return;
+  const scope = trendScope();
+  if(!scope.length){
+    box.innerHTML = '<div class="trend-card card"><div class="trend-empty">还没有价格历史。手机或电脑上编辑商品时勾上「写入今天」，攒到两天就能画出线。</div></div>';
+    return;
+  }
+  // 副筛选选中某件就只画它；否则画范围内全部
+  const list = (trCurrent && trCurrent!=="__all__")
+    ? scope.filter(p=>p.id===trCurrent) : scope;
+  box.innerHTML = list.map(trendCardHTML).join("");
 }
 document.addEventListener("DOMContentLoaded", ()=>{});
 /* ---------- render ---------- */
@@ -2335,7 +2408,7 @@ document.getElementById("list").addEventListener("click", e=>{
   if(ch){
     const id = ch.getAttribute("data-chart");
     if(window.matchMedia("(max-width:760px)").matches){
-      trCurrent = id; showPage("trend"); drawTrend(id);
+      TRFILTER.cats.clear(); trCurrent = id; showPage("trend"); drawTrend();
     }else openChart(id);
     return;
   }
@@ -2495,6 +2568,64 @@ function openForm(id, focusId){
   setTimeout(()=> document.getElementById(focusId || (p?"fPrice":"fCat")).focus(), 60);
 }
 
+/* ---------- 本地 OCR：选截图 → 认字 → 文字进框，不自动填字段、不上传图片 ---------- */
+let ocrWorker = null;              // worker 复用，认多张图不用重复加载引擎
+let ocrLoading = null;             // 首次加载 Promise，防止连点重复初始化
+function ocrSetStatus(msg, kind){
+  const el = document.getElementById("ocrStatus");
+  el.textContent = msg;
+  el.className = "ocr-st" + (kind ? " " + kind : "");
+}
+async function getOcrWorker(){
+  if(ocrWorker) return ocrWorker;
+  if(ocrLoading) return ocrLoading;
+  ocrLoading = (async ()=>{
+    ocrSetStatus("正在加载识别引擎，首次约几秒…");
+    if(typeof Tesseract === "undefined"){
+      await new Promise((resolve, reject)=>{
+        const s = document.createElement("script");
+        s.src = OCR_BASE + "tesseract.min.js";
+        s.onload = resolve;
+        s.onerror = ()=> reject(new Error("引擎脚本没找到，请确认 ocr 文件夹已一起放置"));
+        document.head.appendChild(s);
+      });
+    }
+    // worker 与 core 走本地目录；corePath 指向目录，worker 自己拼 wasm 文件名
+    const w = await Tesseract.createWorker("chi_sim", 1, {
+      workerPath: OCR_BASE + "worker.min.js",
+      corePath:   OCR_BASE,
+      langPath:   OCR_BASE + "lang"
+    });
+    ocrWorker = w;
+    return w;
+  })();
+  try { return await ocrLoading; }
+  catch(e){ ocrLoading = null; throw e; }
+}
+document.getElementById("btnOcrPick").addEventListener("click", ()=> document.getElementById("fOcrFile").click());
+document.getElementById("fOcrFile").addEventListener("change", async (ev)=>{
+  const file = ev.target.files && ev.target.files[0];
+  if(!file) return;
+  // 预览
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById("ocrImg");
+  img.src = url;
+  document.getElementById("ocrPreview").style.display = "block";
+  ocrSetStatus("识别中…");
+  try {
+    const w = await getOcrWorker();
+    const { data } = await w.recognize(file, {}, { text: true });
+    const text = (data && data.text ? data.text : "").trim();
+    document.getElementById("fOcrText").value = text;
+    ocrSetStatus(text ? ("认出 " + text.replace(/\s+/g," ").length + " 个字，复制上面文字自己填") : "没认出字，换个更清楚的截图试试", text ? "ok" : "bad");
+  } catch(err){
+    ocrSetStatus("识别失败：" + (err && err.message ? err.message : "请稍后重试"), "bad");
+  } finally {
+    URL.revokeObjectURL(url);
+    ev.target.value = "";
+  }
+});
+
 /* 拆件区事件：只绑一次 */
 document.getElementById("fSplitRows").addEventListener("input", updateSplitSum);
 document.getElementById("fJD").addEventListener("input", ()=>{
@@ -2641,6 +2772,7 @@ function openChart(id){
 }
 
 /* 趋势页专用：淘宝 / 京东两条线，低饱和柔软配色 */
+const TB_COL = "#F07820", JD_COL = "#E12D2D";   /* 鲜艳橙 / 红：淘宝 / 京东 */
 function chartSVG(h, p){
   const W=740, H=270, L=60, R=66, T=18, B=34;
   const tbPts = h.filter(x=> x.p!=null);
@@ -2676,17 +2808,53 @@ function chartSVG(h, p){
     if(i%step===0 || i===h.length-1)
       labels += `<text x="${x(pt.d).toFixed(1)}" y="${H-10}" text-anchor="middle" font-size="10" fill="#A69D8E">${esc(pt.d.slice(5))}</text>`;
   });
-  const dots=(pts,col)=> pts.map(pt=>`<circle cx="${x(pt.d).toFixed(1)}" cy="${y(pts===jdPts?pt.j:pt.p).toFixed(1)}" r="3" fill="#FBF8F1" stroke="${col}" stroke-width="1.8">
-    <title>${esc(pt.d)} · ${money(pts===jdPts?pt.j:pt.p)}</title></circle>`).join("");
-  const line=(pts,col)=> pts.length<2 ? "" :
-    `<polyline points="${pts.map(z=>x(z.d).toFixed(1)+","+y(pts===jdPts?z.j:z.p).toFixed(1)).join(" ")}" fill="none" stroke="${col}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const dots=(pts,col,isJd)=> pts.map(pt=>`<circle cx="${x(pt.d).toFixed(1)}" cy="${y(isJd?pt.j:pt.p).toFixed(1)}" r="3.2" fill="#FBF8F1" stroke="${col}" stroke-width="1.9" pointer-events="none"/>`).join("");
+  const line=(pts,col,isJd)=> pts.length<2 ? "" :
+    `<polyline points="${pts.map(z=>x(z.d).toFixed(1)+","+y(isJd?z.j:z.p).toFixed(1)).join(" ")}" fill="none" stroke="${col}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>`;
+  /* 大命中圆：透明、半径 15，方便手指点；数据写到 data-* 上供点击时显示 */
+  const hits = h.map((pt,i)=>{
+    const px=x(pt.d).toFixed(1);
+    let cy = pt.p!=null ? y(pt.p) : y(pt.j);
+    if(pt.p!=null && pt.j!=null) cy = (y(pt.p)+y(pt.j))/2;
+    return `<circle class="hit" cx="${px}" cy="${cy.toFixed(1)}" r="15" fill="transparent"
+      data-i="${i}" data-d="${esc(pt.d)}" data-p="${pt.p!=null?pt.p:""}" data-j="${pt.j!=null?pt.j:""}"/>`;
+  }).join("");
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="淘宝和京东价格趋势">
     ${g}${refs}
-    ${line(tbPts,"#C08457")}${line(jdPts,"#B06A62")}
-    ${dots(tbPts,"#C08457")}${dots(jdPts,"#B06A62")}
-    ${labels}
+    ${line(tbPts,TB_COL,false)}${line(jdPts,JD_COL,true)}
+    ${dots(tbPts,TB_COL,false)}${dots(jdPts,JD_COL,true)}
+    ${labels}${hits}
+    <g class="tip" style="display:none" pointer-events="none">
+      <rect class="tipBg" x="0" y="0" width="150" height="64" rx="9" fill="#302E2A" fill-opacity=".95"/>
+      <text class="tipD" x="10" y="18" font-size="11" fill="#E9E2D4"></text>
+      <text class="tipT" x="10" y="37" font-size="12" fill="#FFB27A"></text>
+      <text class="tipJ" x="10" y="55" font-size="12" fill="#FF8C86"></text>
+    </g>
   </svg>`;
 }
+/* 折线图点击：显示当天淘宝/京东价（事件委托在 #trCards 上） */
+document.getElementById("trCards").addEventListener("click", e=>{
+  const hit = e.target.closest(".hit");
+  const svg = e.target.closest("svg");
+  if(!hit || !svg){ if(svg){const t=svg.querySelector(".tip"); if(t) t.style.display="none";} return; }
+  const tip = svg.querySelector(".tip");
+  if(!tip) return;
+  const d = hit.getAttribute("data-d"), pv = hit.getAttribute("data-p"), jv = hit.getAttribute("data-j");
+  const td=tip.querySelector(".tipD"), tt=tip.querySelector(".tipT"), tj=tip.querySelector(".tipJ");
+  td.textContent = d;
+  tt.textContent = "淘宝 " + (pv!=="" ? money(Number(pv)) : "—");
+  tj.textContent = "京东 " + (jv!=="" ? money(Number(jv)) : "—");
+  tip.querySelector(".tipBg").setAttribute("width", "150");
+  /* 气泡定位：优先放圆点右上方，靠边则翻到左侧 */
+  const cx=Number(hit.getAttribute("cx")), cy=Number(hit.getAttribute("cy"));
+  let bx = cx + 12, by = cy - 70;
+  if(bx + 150 > 740-4) bx = cx - 12 - 150;
+  if(bx < 4) bx = 4;
+  if(by < 2) by = cy + 12;
+  if(by + 64 > 270-2) by = 270 - 64 - 2;
+  tip.setAttribute("transform", `translate(${bx.toFixed(1)},${by.toFixed(1)})`);
+  tip.style.display = "";
+});
 
 
 /* ---------- import ---------- */
@@ -2989,8 +3157,23 @@ function showPage(tab){
 
 /* ---------- 趋势筛选事件（此前误插入 CSS，已移回脚本） ---------- */
 document.addEventListener("change", function(e){
-  if(e.target && e.target.id==="trPick"){ trCurrent = e.target.value; drawTrend(trCurrent); }
+  if(e.target && e.target.id==="trPick"){ trCurrent = e.target.value; drawTrend(); }
 });
+/* 趋势缩放：0.6~1.8，作用在所有折线 SVG 的 CSS 宽度上 */
+(function(){
+  const out=document.getElementById("trZoomOut"), inn=document.getElementById("trZoomIn"),
+        lab=document.getElementById("trZoomVal"), box=document.getElementById("trCards");
+  if(!out||!inn||!lab||!box) return;
+  let z=1;
+  const apply=()=>{
+    box.style.setProperty("--trz", z);
+    lab.textContent = Math.round(z*100)+"%";
+    out.disabled = z<=0.6; inn.disabled = z>=1.8;
+  };
+  out.addEventListener("click", ()=>{ z=Math.max(0.6, +(z-0.2).toFixed(2)); apply(); });
+  inn.addEventListener("click", ()=>{ z=Math.min(1.8, +(z+0.2).toFixed(2)); apply(); });
+  apply();
+})();
 document.addEventListener("click", function(e){
   const b = e.target.closest("[data-tfb]");
   if(!b) return;
@@ -2998,10 +3181,11 @@ document.addEventListener("click", function(e){
   if(v==="__all__") TRFILTER.cats.clear();
   else if(TRFILTER.cats.has(v)) TRFILTER.cats.delete(v);
   else TRFILTER.cats.add(v);
+  trCurrent = "__all__";   /* 切换主类目后，副筛选「看哪一件」归位到全部 */
   renderTrend();
 });
 document.addEventListener("click", function(e){
-  if(e.target && e.target.id==="trClear"){ TRFILTER.cats.clear(); renderTrend(); }
+  if(e.target && e.target.id==="trClear"){ TRFILTER.cats.clear(); trCurrent="__all__"; renderTrend(); }
 });
 
 /* ---------- 冻结筛选器：top 精确等于顶栏实高，消除"缝" ---------- */
